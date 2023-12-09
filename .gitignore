@@ -1,5 +1,17 @@
+.gradle
+build/
+out/
+!../../WuerzburgTransportGuide/gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
 # IDE specific
 .idea
+*.iws
+*.iml
+*.ipr
 
 # Compiled class file
 *.class
