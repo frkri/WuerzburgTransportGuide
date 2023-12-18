@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "number": {
+      "type": "int"
+    },
+    "direction": {
+      "type": "string"
+    },
+    "realtime": {
+      "type": "int"
+    },
+    "delay": {
+      "type": "int"
+    }
+  }
+}
