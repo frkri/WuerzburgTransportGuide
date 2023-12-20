@@ -1,3 +1,5 @@
+package netzplan;
+
 public class netzplanApi {
 
   private String xsrfToken;
