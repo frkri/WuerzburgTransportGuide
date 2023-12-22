@@ -4,7 +4,7 @@ plugins {
     id 'org.javamodularity.moduleplugin' version '1.8.12'
     id 'org.openjfx.javafxplugin' version '0.1.0'
     id 'org.beryx.jlink' version '3.0.1'
-    id 'org.hidetake.swagger.generator' version '2.19.2'
+    id "org.openapi.generator" version "6.6.0"
 }
 
 group 'io.github'
@@ -30,25 +30,28 @@ application {
     mainClass = 'io.github.wuerzburgtransportguide.HelloApplication'
 }
 
+openApiGenerate {
+    generatorName.set("java")
+    library.set("retrofit2")
+    inputSpec.set("$rootDir/specs/netzplan.yml")
+    outputDir.set("$buildDir/generated")
+    apiPackage.set("io.github.wuerzburgtransportguide.api")
+    invokerPackage.set("io.github.wuerzburgtransportguide.invoker")
+    modelPackage.set("io.github.wuerzburgtransportguide.model")
+    configOptions.set([
+            dateLibrary: "java8"
+    ])
+}
+
 javafx {
     version = '20.0.2'
     modules = ['javafx.controls', 'javafx.fxml']
 }
 
 dependencies {
-    swaggerCodegen 'io.swagger.codegen.v3:swagger-codegen-cli:3.0.47'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
-}
-
-swaggerSources {
-    netzplan {
-        inputFile = file('netzplan.yaml')
-        code {
-            language = 'java'
-            jvmArgs = ['--add-opens=java.base/java.util=ALL-UNNAMED']
-        }
-    }
 }
 
 test {
@@ -67,4 +70,4 @@ jlinkZip {
     group = 'distribution'
 }
 
-build.dependsOn generateSwaggerCode
+compileJava.dependsOn tasks.named("openApiGenerate")
