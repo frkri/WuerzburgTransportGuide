@@ -4,7 +4,7 @@ info:
   version: 1.0.0
 servers:
 - url: https://netzplan.vvm-info.de/api
-  description: The default server
+  description: The netzplan API
 paths:
   /journeyplanners/efa_xml/locations/de%3A09663%3A208/stationboard/departure:
     get:
@@ -23,45 +23,45 @@ paths:
                       type: object
                       properties:
                         hour:
-                          type: string
+                          type: number
                         minute:
-                          type: string
+                          type: number
                         year:
-                          type: string
+                          type: number
                         month:
-                          type: string
+                          type: number
                         day:
-                          type: string
+                          type: number
                         weekday:
-                          type: string
+                          type: number
                     servingLine:
                       type: object
                       properties:
                         number:
-                          type: string
+                          type: number
                         direction:
-                          type: string
+                          type: number
                         realtime:
-                          type: string
+                          type: number
                         delay:
-                          type: string
+                          type: number
                     platformName:
                       type: string
                     realDateTime:
                       type: object
                       properties:
                         hour:
-                          type: string
+                          type: number
                         minute:
-                          type: string
+                          type: number
                         year:
-                          type: string
+                          type: number
                         month:
-                          type: string
+                          type: number
                         day:
-                          type: string
+                          type: number
                         weekday:
-                          type: string
+                          type: number
           headers:
             X-RateLimit-Limit:
               description: '120'
