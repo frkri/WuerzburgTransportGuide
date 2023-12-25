@@ -2,7 +2,7 @@
 
 ## Building
 
-At minimum Java 20 is required
+At (minimum) Java Development Kit 21 is required to build this project.
 
 ### Generating the Client API
 
