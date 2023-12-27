@@ -1,0 +1,9 @@
+# We don't require any of the supporting files
+# ** is required, see https://github.com/OpenAPITools/openapi-generator/issues/5723
+**
+
+# Except for the models and the api files
+!**src/main/java/io/github/wuerzburgtransportguide/api/**
+!**src/main/java/io/github/wuerzburgtransportguide/model/**
+!**/CollectionFormats.java
+!**/StringUtil.java

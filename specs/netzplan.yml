@@ -1,0 +1,85 @@
+openapi: 3.0.0
+info:
+  title: Netzplan
+  version: 1.0.0
+servers:
+- url: https://netzplan.vvm-info.de/api
+  description: The netzplan API
+paths:
+  /journeyplanners/efa_xml/locations/de%3A09663%3A208/stationboard/departure:
+    get:
+      summary: GET departure
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    dateTime:
+                      type: object
+                      properties:
+                        hour:
+                          type: number
+                        minute:
+                          type: number
+                        year:
+                          type: number
+                        month:
+                          type: number
+                        day:
+                          type: number
+                        weekday:
+                          type: number
+                    servingLine:
+                      type: object
+                      properties:
+                        number:
+                          type: number
+                        direction:
+                          type: number
+                        realtime:
+                          type: number
+                        delay:
+                          type: number
+                    platformName:
+                      type: string
+                    realDateTime:
+                      type: object
+                      properties:
+                        hour:
+                          type: number
+                        minute:
+                          type: number
+                        year:
+                          type: number
+                        month:
+                          type: number
+                        day:
+                          type: number
+                        weekday:
+                          type: number
+          headers:
+            X-RateLimit-Limit:
+              description: '120'
+              schema:
+                type: number
+            Content-Type:
+              description: application/json
+              schema:
+                type: string
+      parameters:
+      - name: locale
+        in: query
+        required: false
+        schema:
+          type: string
+x-path-templates:
+# Remove the ignore: prefix to generate an endpoint with its URL
+# Lines that are closer to the top take precedence, the matching is greedy
+- ignore:/bc-drawing/ilnp
+- ignore:/maps/tlnp/layersets
+- ignore:/wms-layers/wvvwuerzburg_haltestellen_gesamt/features
