@@ -33,8 +33,22 @@ java {
     }
 }
 
+sourceSets {
+    main {
+        java {
+            srcDir(layout.buildDirectory.dir("generated-sources/src/main/java"))
+        }
+    }
+}
+
 dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'jakarta.annotation:jakarta.annotation-api:3.0.0-M1'
+    implementation 'org.jetbrains:annotations:24.1.0'
+    
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }
@@ -43,13 +57,18 @@ openApiGenerate {
     generatorName.set("java")
     library.set("retrofit2")
     inputSpec.set("$rootDir/specs/netzplan.yml")
-    outputDir.set(layout.buildDirectory.dir("generated").map {
+    outputDir.set(layout.buildDirectory.dir("generated-sources").map {
         it.asFile.absolutePath
     })
-    invokerPackage.set("io.github.wuerzburgtransportguide.client")
     apiPackage.set("io.github.wuerzburgtransportguide.api")
     modelPackage.set("io.github.wuerzburgtransportguide.model")
-    configOptions.set([dateLibrary: "java8"])
+    ignoreFileOverride.set("$rootDir/specs/.openapi-generator-ignore")
+    configOptions.set([dateLibrary: "java8", useJakartaEe: 'true'])
+
+    generateApiDocumentation.set(false)
+    generateModelDocumentation.set(false)
+    generateModelTests.set(false)
+    generateApiTests.set(false)
 }
 
 javafx {
