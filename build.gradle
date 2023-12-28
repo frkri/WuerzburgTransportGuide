@@ -77,6 +77,7 @@ spotless {
 	groovyGradle {
 		target '*.gradle'
 		greclipse()
+		endWithNewline()
 	}
 	java {
 		importOrder()
@@ -85,7 +86,7 @@ spotless {
 		// Clean up & Format
 		removeUnusedImports()
 		cleanthat()
-		googleJavaFormat().formatJavadoc(true).reorderImports(true).reflowLongStrings(true)
+		googleJavaFormat().aosp().formatJavadoc(true).reorderImports(true).reflowLongStrings(true)
 		formatAnnotations()
 		endWithNewline()
 	}
