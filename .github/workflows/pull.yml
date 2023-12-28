@@ -1,4 +1,4 @@
-name: Java
+name: Auto format pull requests
 
 on:
   pull_request:
