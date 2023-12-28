@@ -5,7 +5,6 @@ import java.util.List;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.HttpUrl;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A simple cookie store that only stores accepted cookies and removes expired cookies. Older
@@ -20,13 +19,13 @@ public class FilteredCookieStore implements CookieJar {
   }
 
   @Override
-  public void saveFromResponse(@NotNull HttpUrl httpUrl, List<Cookie> list) {
+  public void saveFromResponse(HttpUrl httpUrl, List<Cookie> list) {
     for (var cookie : list)
       if (acceptedCookieNames.contains(cookie.name())) cookieStore.put(cookie.name(), cookie);
   }
 
   @Override
-  public @NotNull List<Cookie> loadForRequest(@NotNull HttpUrl httpUrl) {
+  public List<Cookie> loadForRequest(HttpUrl httpUrl) {
     evaluateExpiredCookies();
     return cookieStore.values().stream().toList();
   }
