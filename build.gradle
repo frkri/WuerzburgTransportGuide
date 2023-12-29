@@ -1,57 +1,136 @@
 plugins {
-    id 'java'
-    id 'application'
-    id 'org.javamodularity.moduleplugin' version '1.8.12'
-    id 'org.openjfx.javafxplugin' version '0.1.0'
-    id 'org.beryx.jlink' version '3.0.1'
+	id 'java'
+	id 'application'
+	id 'org.javamodularity.moduleplugin' version '1.8.12'
+	id 'org.openjfx.javafxplugin' version '0.1.0'
+	id 'org.beryx.jlink' version '3.0.1'
+	id "org.openapi.generator" version "6.6.0"
+	id "com.diffplug.spotless" version "6.23.3"
 }
 
 group 'io.github'
 version '1.0-SNAPSHOT'
 
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 
 ext {
-    junitVersion = '5.10.1'
+	junitVersion = '5.10.1'
 }
 
-sourceCompatibility = '17'
-targetCompatibility = '17'
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = 'UTF-8'
 }
 
 application {
-    mainModule = 'io.github.wuerzburgtransportguide'
-    mainClass = 'io.github.wuerzburgtransportguide.HelloApplication'
+	mainModule = 'io.github.wuerzburgtransportguide'
+	mainClass = 'io.github.wuerzburgtransportguide.HelloApplication'
 }
 
-javafx {
-    version = '17.0.6'
-    modules = ['javafx.controls', 'javafx.fxml']
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+sourceSets {
+	main {
+		java {
+			srcDir(layout.buildDirectory.dir("generated-sources/src/main/java"))
+		}
+	}
 }
 
 dependencies {
+	implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+	implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+	implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+	implementation 'com.google.code.gson:gson:2.10.1'
+	implementation 'jakarta.annotation:jakarta.annotation-api:3.0.0-M1'
+	implementation 'org.jetbrains:annotations:24.1.0'
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+	testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+}
+
+
+openApiGenerate {
+	generatorName.set("java")
+	library.set("retrofit2")
+	inputSpec.set("$rootDir/specs/netzplan.yml")
+	outputDir.set(layout.buildDirectory.dir("generated-sources").map {
+		it.asFile.absolutePath
+	})
+	apiPackage.set("io.github.wuerzburgtransportguide.api")
+	modelPackage.set("io.github.wuerzburgtransportguide.model")
+	ignoreFileOverride.set("$rootDir/specs/.openapi-generator-ignore")
+	configOptions.set([dateLibrary: "java8", useJakartaEe: "true"])
+
+	generateApiDocumentation.set(false)
+	generateModelDocumentation.set(false)
+	generateModelTests.set(false)
+	generateApiTests.set(false)
+}
+
+spotless {
+	groovyGradle {
+		target '*.gradle'
+		greclipse()
+		endWithNewline()
+	}
+	java {
+		importOrder()
+		targetExclude('**/generated-sources/**')
+
+		// Clean up & Format
+		removeUnusedImports()
+		cleanthat()
+		googleJavaFormat().aosp().formatJavadoc(true).reorderImports(true).reflowLongStrings(true)
+		formatAnnotations()
+		endWithNewline()
+	}
+	format 'fxml', {
+		target 'src/**/*.fxml'
+		eclipseWtp('xml').configFile("$rootDir/preferences/wst/xml.prefs")
+		endWithNewline()
+	}
+	format 'css', {
+		target 'src/**/*.css'
+		eclipseWtp('css').configFile("$rootDir/preferences/wst/css.prefs")
+		endWithNewline()
+	}
+}
+
+javafx {
+	version = '21.0.1'
+	modules = [
+		'javafx.controls',
+		'javafx.fxml'
+	]
 }
 
 test {
-    useJUnitPlatform()
+	useJUnitPlatform()
 }
 
 jlink {
-    imageZip = project.file("${buildDir}/distributions/app-${javafx.platform.classifier}.zip")
-    options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
-    launcher {
-        name = 'app'
-    }
+	imageZip = layout.buildDirectory.file("distributions/app-${javafx.platform.classifier}.zip")
+	options = [
+		'--strip-debug',
+		'--compress',
+		'zip-6',
+		'--no-header-files',
+		'--no-man-pages'
+	]
+	launcher {
+		name = 'app'
+	}
 }
 
 jlinkZip {
-    group = 'distribution'
+	group = 'distribution'
 }
+
+compileJava.dependsOn(tasks.named("spotlessApply"))
+compileJava.dependsOn(tasks.named("openApiGenerate"))
