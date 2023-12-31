@@ -5,41 +5,14 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<VBox
-	id="background"
-	alignment="TOP_CENTER"
-	prefHeight="800.0"
-	prefWidth="1000.0"
-	spacing="20.0"
-	stylesheets="@start.css"
-	xmlns="http://javafx.com/javafx/17.0.2-ea"
-	xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="io.github.wuerzburgtransportguide.Controller"
+<VBox id="background" alignment="TOP_CENTER" prefHeight="800.0" prefWidth="1000.0" spacing="20.0" stylesheets="@start.css" xmlns="http://javafx.com/javafx/17.0.2-ea"
+	xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.wuerzburgtransportguide.Controller"
 >
 	<padding>
-		<Insets
-			bottom="20.0"
-			left="20.0"
-			right="20.0"
-			top="20.0" />
+		<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
 	</padding>
-	<Pane
-		layoutX="30.0"
-		layoutY="97.0"
-		prefHeight="114.0"
-		prefWidth="911.0" />
-	<Label
-		id="header"
-		text="WuerzburgTransportGuide"
-		textAlignment="CENTER"
-		textFill="#2766cd" />
-	<Pane
-		prefHeight="251.0"
-		prefWidth="938.0" />
-	<Button
-		id="startButton"
-		alignment="CENTER"
-		mnemonicParsing="false"
-		text="Start"
-		textAlignment="CENTER" />
+	<Pane layoutX="30.0" layoutY="97.0" prefHeight="114.0" prefWidth="911.0" />
+	<Label id="header" text="WuerzburgTransportGuide" textAlignment="CENTER" textFill="#2766cd" />
+	<Pane prefHeight="251.0" prefWidth="938.0" />
+	<Button id="startButton" alignment="CENTER" mnemonicParsing="false" text="Start" textAlignment="CENTER" />
 </VBox>
