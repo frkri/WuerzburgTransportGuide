@@ -14,7 +14,7 @@
 	stylesheets="@start.css"
 	xmlns="http://javafx.com/javafx/17.0.2-ea"
 	xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="io.github.wuerzburgtransportguide.HelloController"
+	fx:controller="io.github.wuerzburgtransportguide.Controller"
 >
 	<padding>
 		<Insets
