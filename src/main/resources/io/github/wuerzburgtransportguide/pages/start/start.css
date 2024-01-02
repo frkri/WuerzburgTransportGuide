@@ -1,18 +1,20 @@
 #background {
 	-fx-background-image: url("start_bg.png");
-	-fx-background-size: 1000.0 800.0;
+	-fx-background-size: cover;
 }
 
 #startButton {
-	-fx-color: #000000;
 	-fx-background-color: rgb(50, 50, 50, 0.8);
-	-fx-font-size: 80px;
-	-fx-border-radius: 10;
 	-fx-background-radius: 10;
+	-fx-text-fill: white;
+	-fx-font-size: 25px;
 }
 
 #header {
-	-fx-font-size: 32px;
-	-fx-underline: true;
-	-fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.5), 0, 0, 0, 1);
+	-fx-background-color: rgb(50, 50, 50, 0.8);
+	-fx-background-radius: 10;
+	-fx-padding: 15px;
+	-fx-font-size: 40px;
+	-fx-font-weight: bold;
+	-fx-text-fill: white;
 }

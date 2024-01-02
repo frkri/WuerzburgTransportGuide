@@ -1,0 +1,12 @@
+* {
+	-fx-base: #FFFFFF;
+	-fx-accent: #000000;
+	-fx-default-button: #000000;
+	-fx-focus-color: #000000;
+	-fx-faint-focus-color: #000000;
+	-fx-font-family: Helvetica;
+	-fx-font-weight: normal;
+	-fx-text-fill: black;
+	-fx-background: none;
+	-fx-background-color: none;
+}
