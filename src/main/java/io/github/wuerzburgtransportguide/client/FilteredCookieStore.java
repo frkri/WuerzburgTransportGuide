@@ -3,14 +3,15 @@ package io.github.wuerzburgtransportguide.client;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.HttpUrl;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
 
 /**
- * A simple cookie store that only stores accepted cookies and removes expired cookies.
- * Older cookies are overwritten by new ones.
+ * A simple cookie store that only stores accepted cookies and removes expired cookies. Older
+ * cookies are overwritten by new ones.
  */
 public class FilteredCookieStore implements CookieJar {
     private final List<String> acceptedCookieNames;
