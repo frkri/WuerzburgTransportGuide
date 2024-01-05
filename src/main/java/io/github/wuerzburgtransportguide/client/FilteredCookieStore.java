@@ -3,15 +3,15 @@ package io.github.wuerzburgtransportguide.client;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.HttpUrl;
-
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 /**
- * A simple cookie store that only stores accepted cookies and removes expired cookies. Older
- * cookies are overwritten by new ones.
+ * A simple in-memory cookie store that only accepts cookies with matching names. Older
+ * cookies are always overwritten by new ones and removed if expired.
  */
 public class FilteredCookieStore implements CookieJar {
     private final List<String> acceptedCookieNames;
@@ -22,15 +22,15 @@ public class FilteredCookieStore implements CookieJar {
     }
 
     @Override
-    public void saveFromResponse(@NotNull HttpUrl httpUrl, List<Cookie> list) {
-        for (var cookie : list)
-            if (acceptedCookieNames.contains(cookie.name())) cookieStore.put(cookie.name(), cookie);
+    public void saveFromResponse(@NotNull HttpUrl httpUrl, @NotNull List<Cookie> list) {
+        for (var incomingCookie : list)
+            if (acceptedCookieNames.contains(incomingCookie.name())) cookieStore.put(incomingCookie.name(), incomingCookie);
     }
 
     @Override
     public @NotNull List<Cookie> loadForRequest(@NotNull HttpUrl httpUrl) {
         evaluateExpiredCookies();
-        return cookieStore.values().stream().toList();
+        return new ArrayList<>(cookieStore.values());
     }
 
     public void evaluateExpiredCookies() {
