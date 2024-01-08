@@ -1,23 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
-<VBox id="background" alignment="TOP_CENTER" prefHeight="800.0" prefWidth="1000.0" spacing="20.0" stylesheets="@route.css" xmlns="http://javafx.com/javafx/17.0.2-ea"
+<?import javafx.scene.layout.*?>
+
+<VBox id="background" alignment="TOP_CENTER" prefHeight="800.0" prefWidth="1000.0" spacing="20.0" styleClass="background" xmlns="http://javafx.com/javafx/17.0.2-ea"
 	xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.wuerzburgtransportguide.Controller"
 >
 	<padding>
 		<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
 	</padding>
-	<SplitPane dividerPositions="0.29797979797979796" prefHeight="800.0" prefWidth="800.0">
-		<AnchorPane minHeight="400.0" minWidth="475.0" prefHeight="758.0" prefWidth="445.0">
-			<TextField id="start" prefHeight="25.0" prefWidth="960.0" promptText="Geben Sie die Start Haltestelle ein" styleClass="fenster" />
-			<ListView prefHeight="200.0" prefWidth="200.0" styleClass="fenster" />
-		</AnchorPane>
-		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="758.0" prefWidth="507.0">
-			<TextField id="ziel" prefHeight="25.0" prefWidth="644.0" promptText="Geben Sie die End Haltestelle ein" styleClass="fenster" />
-			<ListView prefHeight="200.0" prefWidth="200.0" styleClass="fenster" />
-		</AnchorPane>
-	</SplitPane>
+	<children>
+		<GridPane alignment="CENTER" hgap="15.0" vgap="15.0" VBox.vgrow="ALWAYS">
+			<columnConstraints>
+				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+			</columnConstraints>
+			<rowConstraints>
+				<RowConstraints maxHeight="70.0" minHeight="10.0" prefHeight="512.0" vgrow="ALWAYS" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+				<RowConstraints maxHeight="140.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+			</rowConstraints>
+			<children>
+				<ListView prefHeight="200.0" prefWidth="200.0" styleClass="fenster" GridPane.rowIndex="1" />
+				<ListView prefHeight="200.0" prefWidth="200.0" styleClass="fenster" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+				<TextField id="ziel" styleClass="fenster" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+				<TextField id="start" styleClass="fenster" GridPane.hgrow="ALWAYS" />
+			</children>
+		</GridPane>
+	</children>
+	<stylesheets>
+		<URL value="@../../styles/global.css" />
+		<URL value="@route.css" />
+	</stylesheets>
 </VBox>

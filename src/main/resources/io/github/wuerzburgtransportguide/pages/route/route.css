@@ -1,13 +1,12 @@
-#background {
-	-fx-background-color: #000000;
-}
-
 .fenster {
 	-fx-background-color: #4E5357;
-	-fx-position: relative;
-	-fx-width: 100px;
+	-fx-text-fill: white;
 }
 
 #start {
-	-fx-left: 0px;
+	
+}
+
+#ziel {
+	
 }
