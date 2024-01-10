@@ -38,4 +38,16 @@ public class FilteredCookieStore implements CookieJar {
     public void evaluateExpiredCookies() {
         cookieStore.values().removeIf(cookie -> cookie.expiresAt() < System.currentTimeMillis());
     }
+
+    public HashMap<String, Cookie> getUnderlyingStore() {
+        return cookieStore;
+    }
+
+    public void addCookie(Cookie cookie) {
+        if (acceptedCookieNames.contains(cookie.name())) cookieStore.put(cookie.name(), cookie);
+    }
+
+    public Cookie getCookie(String cookieName) {
+        return cookieStore.get(cookieName);
+    }
 }

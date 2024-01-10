@@ -1,8 +1,6 @@
 package io.github.wuerzburgtransportguide.client;
 
-import io.github.wuerzburgtransportguide.client.componenents.FilteredCookieStore;
-import io.github.wuerzburgtransportguide.client.componenents.RequiredHeader;
-import io.github.wuerzburgtransportguide.client.componenents.RequiredHeadersInterceptor;
+import io.github.wuerzburgtransportguide.client.componenents.*;
 
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
@@ -25,7 +23,7 @@ public class ApiClient {
             okHttpClient.cache(new Cache(cacheDir.toFile(), 10L * 1024L * 1024L));
 
         // CookieStore
-        var cookieStore = new FilteredCookieStore(List.of("XSRF-TOKEN"));
+        var cookieStore = new FilteredCookieStore(List.of("XSRF-TOKEN", "laravel_token"));
         okHttpClient.cookieJar(cookieStore);
 
         // Required Headers
@@ -34,6 +32,10 @@ public class ApiClient {
                         new RequiredHeader("User-Agent", "WuerzburgTransportGuide/1.0.0"),
                         new RequiredHeader("Accept", "application/json"));
         okHttpClient.addInterceptor(new RequiredHeadersInterceptor(requiredHeaders));
+
+        // XSRF Token Authenticator
+        okHttpClient.addInterceptor(
+                new RequiredXsrfInterceptor(cookieStore, List.of("https://netzplan.vvm-info.de/")));
 
         retrofitClient =
                 new Retrofit.Builder()

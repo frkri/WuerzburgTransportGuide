@@ -23,45 +23,30 @@ paths:
                       type: object
                       properties:
                         hour:
-                          type: number
+                          type: integer
                         minute:
-                          type: number
+                          type: integer
                         year:
-                          type: number
+                          type: integer
                         month:
-                          type: number
+                          type: integer
                         day:
-                          type: number
+                          type: integer
                         weekday:
-                          type: number
+                          type: integer
                     servingLine:
                       type: object
                       properties:
                         number:
-                          type: number
+                          type: string
                         direction:
-                          type: number
+                          type: string
                         realtime:
-                          type: number
+                          type: integer
                         delay:
-                          type: number
+                          type: integer
                     platformName:
                       type: string
-                    realDateTime:
-                      type: object
-                      properties:
-                        hour:
-                          type: number
-                        minute:
-                          type: number
-                        year:
-                          type: number
-                        month:
-                          type: number
-                        day:
-                          type: number
-                        weekday:
-                          type: number
           headers:
             Content-Type:
               description: application/json
@@ -73,6 +58,7 @@ paths:
           required: false
           schema:
             type: string
+
 x-path-templates:
   # Remove the ignore: prefix to generate an endpoint with its URL
   # Lines that are closer to the top take precedence, the matching is greedy
