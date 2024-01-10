@@ -3,10 +3,6 @@
 	-fx-text-fill: white;
 }
 
-#start {
-	
-}
-
-#ziel {
-	
+#date {
+	-fx-control-inner-background: #4E5357;
 }
