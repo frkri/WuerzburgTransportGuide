@@ -4,17 +4,24 @@ import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
 
 import javafx.fxml.FXML;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
 
 public class MapController {
-
-    @FXML public VBox main;
+    @FXML private Pane mapContainer;
 
     public void initialize() {
-        MapView mapView = new MapView();
+        var mapView = new MapView();
         mapView.setCenter(new MapPoint(49.783333, 9.933333));
-        mapView.setZoom(12);
+        mapView.setZoom(14);
 
-        main.getChildren().add(mapView);
+        mapContainer.getChildren().add(mapView);
+    }
+
+    public void visitOpenStreetMap() {
+        Util.visitSite("https://www.openstreetmap.org/copyright");
+    }
+
+    public void visitVVM() {
+        Util.visitSite("https://netzplan.vvm-info.de/");
     }
 }

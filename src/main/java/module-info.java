@@ -8,6 +8,7 @@ module io.github.wuerzburgtransportguide {
     requires jakarta.annotation;
     requires org.jetbrains.annotations;
     requires com.gluonhq.maps;
+    requires java.desktop;
 
     opens io.github.wuerzburgtransportguide to
             javafx.fxml;
