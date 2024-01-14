@@ -7,6 +7,7 @@ module io.github.wuerzburgtransportguide {
     requires com.google.gson;
     requires jakarta.annotation;
     requires org.jetbrains.annotations;
+    requires com.gluonhq.maps;
 
     opens io.github.wuerzburgtransportguide to
             javafx.fxml;
@@ -14,4 +15,8 @@ module io.github.wuerzburgtransportguide {
             com.google.gson;
 
     exports io.github.wuerzburgtransportguide;
+    exports io.github.wuerzburgtransportguide.view;
+
+    opens io.github.wuerzburgtransportguide.view to
+            javafx.fxml;
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox id="background" fx:id="main" alignment="TOP_CENTER" prefHeight="800.0" prefWidth="1000.0" spacing="20.0" styleClass="background"
+	xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.wuerzburgtransportguide.view.MapController"
+>
+	<padding>
+		<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+	</padding>
+	<stylesheets>
+		<URL value="@../../styles/global.css" />
+		<URL value="@map.css" />
+	</stylesheets>
+</VBox>
