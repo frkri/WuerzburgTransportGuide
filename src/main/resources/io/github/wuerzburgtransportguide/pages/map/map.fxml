@@ -12,16 +12,16 @@
 		<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
 	</padding>
 	<children>
-		<HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
+		<Pane VBox.vgrow="NEVER">
 			<children>
-				<VBox alignment="CENTER_LEFT" HBox.hgrow="NEVER" styleClass="attribution">
+				<HBox alignment="CENTER_LEFT" fillHeight="false">
 					<children>
 						<Hyperlink onAction="#visitOpenStreetMap" text="Map data from OpenStreetMap" />
 						<Hyperlink onAction="#visitVVM" text="Public Transport data from VVM" />
 					</children>
-				</VBox>
+				</HBox>
 			</children>
-		</HBox>
+		</Pane>
 	</children>
 	<stylesheets>
 		<URL value="@../../styles/global.css" />
