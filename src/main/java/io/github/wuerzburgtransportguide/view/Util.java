@@ -10,7 +10,7 @@ public class Util {
         try {
             Desktop.getDesktop().browse(new URI(url));
         } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
+            // TODO Show toast
         }
     }
 }

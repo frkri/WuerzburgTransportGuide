@@ -3,8 +3,14 @@
 	-fx-text-fill: white;
 }
 
-#date {
+.lists {
 	-fx-control-inner-background: #4E5357;
+	-fx-text-fill: white;
+}
+
+.lists>* {
+	-fx-control-inner-background: #4E5357;
+	-fx-background-color: black;
 }
 
 #searchButton {

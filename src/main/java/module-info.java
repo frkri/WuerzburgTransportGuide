@@ -15,6 +15,8 @@ module io.github.wuerzburgtransportguide {
     opens io.github.wuerzburgtransportguide.model to
             com.google.gson;
 
+    exports io.github.wuerzburgtransportguide.api;
+    exports io.github.wuerzburgtransportguide.model;
     exports io.github.wuerzburgtransportguide;
     exports io.github.wuerzburgtransportguide.view;
 
@@ -24,5 +26,15 @@ module io.github.wuerzburgtransportguide {
     exports io.github.wuerzburgtransportguide.view.map;
 
     opens io.github.wuerzburgtransportguide.view.map to
+            javafx.fxml;
+
+    exports io.github.wuerzburgtransportguide.view.route;
+
+    opens io.github.wuerzburgtransportguide.view.route to
+            javafx.fxml;
+
+    exports io.github.wuerzburgtransportguide.view.start;
+
+    opens io.github.wuerzburgtransportguide.view.start to
             javafx.fxml;
 }

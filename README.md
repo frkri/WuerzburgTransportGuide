@@ -11,6 +11,3 @@ This helps us generate the required interface for the [Retrofit](https://square.
 
 The source specification file can be found under ``specs/netzplan.yml``
 
-```shell
-
-```

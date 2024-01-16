@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 
 <VBox id="background" alignment="TOP_CENTER" prefHeight="800.0" prefWidth="1000.0" spacing="20.0" styleClass="background" xmlns="http://javafx.com/javafx/17.0.2-ea"
-	xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.wuerzburgtransportguide.SwitchSceneController"
+	xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.wuerzburgtransportguide.view.route.RouteController"
 >
 	<padding>
 		<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -23,11 +23,12 @@
 				<RowConstraints maxHeight="140.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 			</rowConstraints>
 			<children>
-				<ListView prefHeight="200.0" prefWidth="200.0" styleClass="fenster" GridPane.rowIndex="1" />
-				<ListView prefHeight="200.0" prefWidth="200.0" styleClass="fenster" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-				<TextField id="ziel" styleClass="fenster" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
-				<TextField id="start" styleClass="fenster" GridPane.hgrow="ALWAYS" />
-				<Button id="searchButton" prefHeight="100" prefWidth="400" text="Suchen" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+				<ListView fx:id="startList" prefHeight="200.0" prefWidth="200.0" styleClass="fenster, lists" GridPane.rowIndex="1" />
+				<ListView fx:id="destinationList" prefHeight="200.0" prefWidth="200.0" styleClass="fenster, lists" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+				<TextField id="ziel" fx:id="destination" promptText="Ziel" styleClass="fenster" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+				<TextField id="start" fx:id="start" promptText="Start" styleClass="fenster" GridPane.hgrow="ALWAYS" />
+				<Button fx:id="searchButton" id="searchButton" onAction="#showAvailableRoutes" prefHeight="100" prefWidth="400" text="Suchen" GridPane.columnSpan="2"
+					GridPane.halignment="CENTER" GridPane.rowIndex="2" />
 			</children>
 		</GridPane>
 
