@@ -6,9 +6,12 @@ servers:
   - url: https://netzplan.vvm-info.de/api
     description: The Netzplan API
 paths:
-  /journeyplanners/efa_xml/locations/de%3A09663%3A208/stationboard/departure:
+  /journeyplanners/efa_xml/locations/{stationId}/stationboard/departure:
     get:
-      summary: GET departure
+      operationId: getDepartures
+      summary: Get departures of a stop, including 'realtime' data
+      tags:
+        - netzplan
       responses:
         '200':
           description: OK
@@ -53,15 +56,71 @@ paths:
               schema:
                 type: string
       parameters:
+        - name: stationId
+          description: The ID of the stop, also called idefa in the EFA API
+          example: de:09663:436
+          in: path
+          required: true
+          schema:
+            type: string
         - name: locale
+          examples:
+            en:
+              value: en-us
+            de:
+              value: de-de
           in: query
           required: false
           schema:
             type: string
-
+  /journeyplanners/efa_xml/places:
+    get:
+      operationId: getPlaces
+      summary: Search for places similar to the given name query, can be used for autocomplete in input fields
+      tags:
+        - netzplan
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                    name:
+                      type: string
+                    type:
+                      type: string
+                    idefa:
+                      type: string
+                    centerx:
+                      type: number
+                    centery:
+                      type: number
+      parameters:
+        - name: locale
+          examples:
+            en:
+              value: en-us
+            de:
+              value: de-de
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: term
+          in: query
+          required: false
+          schema:
+            type: string
 x-path-templates:
   # Remove the ignore: prefix to generate an endpoint with its URL
   # Lines that are closer to the top take precedence, the matching is greedy
   - ignore:/bc-drawing/ilnp
   - ignore:/maps/tlnp/layersets
   - ignore:/wms-layers/wvvwuerzburg_haltestellen_gesamt/features
+  - ignore:/journeyplanners/efa_xml/locations
