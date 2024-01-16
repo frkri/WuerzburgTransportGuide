@@ -8,11 +8,11 @@ import java.util.List;
 public class SceneController {
 
     private DependencyInjectorLoader dependencyInjectorLoader;
-    private Stage primaryStage;
-    private List<String> pagesPaths;
+    private final Stage primaryStage;
+    private final List<String> pagesPaths;
 
-    private double defaultSceneWidth = 0;
-    private double defaultSceneHeight = 0;
+    private final double defaultSceneWidth;
+    private final double defaultSceneHeight;
     private int currentIndex = 0;
 
     public SceneController(
