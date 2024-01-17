@@ -17,11 +17,12 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.*;
 
 public class RouteController extends ControllerHelper {
 
     private final int MIN_QUERY_LENGTH = 2;
+    private final int QUERY_DELAY = 500;
 
     private final ObservableList<StopPoint> startListDataView =
             FXCollections.observableArrayList(new ArrayList<>());
@@ -32,15 +33,15 @@ public class RouteController extends ControllerHelper {
     private StopPoint selectedStart;
     private StopPoint selectedDestination;
     private Boolean isInternalChange = false;
+    private final ScheduledExecutorService executorService =
+            Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> scheduledFuture = null;
 
     @FXML private TextField start;
     @FXML private ListView<StopPoint> startList;
     @FXML private TextField destination;
     @FXML private ListView<StopPoint> destinationList;
     @FXML private Button searchButton;
-
-    // TODO Implement rate limiting
-    private int lastInputTimestamp = 0;
 
     public RouteController() {
         super();
@@ -53,7 +54,6 @@ public class RouteController extends ControllerHelper {
     public void initialize() {
         startList.setItems(startListDataView);
         destinationList.setItems(destinationListDataView);
-
         searchButton.setOnAction(value -> showAvailableRoutes().showAndWait());
 
         start.textProperty()
@@ -89,36 +89,36 @@ public class RouteController extends ControllerHelper {
     public void handleQuery(String query, ObservableList<StopPoint> listDataView) {
         if (query.length() <= MIN_QUERY_LENGTH || isInternalChange) return;
 
-        listDataView.clear();
-        try {
-            updateListFromQuery(query, listDataView);
-        } catch (RuntimeException e) {
-            // TODO Show toast error
-            throw new RuntimeException(e);
+        // Make sure that the previous query is canceled, constraining the number of ongoing
+        // requests to 1
+        if (scheduledFuture != null && !scheduledFuture.isDone()) {
+            scheduledFuture.cancel(true);
         }
-    }
 
-    public void updateListFromQuery(String query, ObservableList<StopPoint> listDataView)
-            throws RuntimeException {
-        CompletableFuture.runAsync(
-                () -> {
-                    try {
-                        var request = apiService.getPlaces("de-de", query);
-                        var response = request.execute();
-                        if (!response.isSuccessful() || response.body() == null)
-                            throw new RuntimeException("Query has failed");
+        scheduledFuture =
+                executorService.schedule(
+                        () -> {
+                            try {
+                                var request = apiService.getPlaces("de-de", query);
+                                var response = request.execute();
+                                if (!response.isSuccessful() || response.body() == null)
+                                    throw new RuntimeException("Query has failed");
 
-                        Platform.runLater(
-                                () -> {
-                                    for (var item : response.body()) {
-                                        var stopPoint = new StopPoint(item);
-                                        listDataView.add(stopPoint);
-                                    }
-                                });
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+                                Platform.runLater(
+                                        () -> {
+                                            listDataView.clear();
+                                            for (var item : response.body()) {
+                                                var stopPoint = new StopPoint(item);
+                                                listDataView.add(stopPoint);
+                                            }
+                                        });
+                            } catch (IOException e) {
+                                // TODO Show toast error
+                                throw new RuntimeException(e);
+                            }
+                        },
+                        QUERY_DELAY,
+                        TimeUnit.MILLISECONDS);
     }
 
     public Stage showAvailableRoutes() {
