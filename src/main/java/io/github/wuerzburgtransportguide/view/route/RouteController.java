@@ -15,14 +15,19 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import org.apache.commons.text.similarity.LevenshteinDistance;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.*;
 
 public class RouteController extends ControllerHelper {
 
-    private final int MIN_QUERY_LENGTH = 2;
-    private final int QUERY_DELAY = 500;
+    private static final int MIN_QUERY_LENGTH = 2;
+    private static final int QUERY_DELAY = 200;
+    private static final int LEVENSHTEIN_THRESHOLD = 3;
 
     private final ObservableList<StopPoint> startListDataView =
             FXCollections.observableArrayList(new ArrayList<>());
@@ -30,12 +35,11 @@ public class RouteController extends ControllerHelper {
     private final ObservableList<StopPoint> destinationListDataView =
             FXCollections.observableArrayList(new ArrayList<>());
 
-    private StopPoint selectedStart;
-    private StopPoint selectedDestination;
-    private Boolean isInternalChange = false;
     private final ScheduledExecutorService executorService =
             Executors.newSingleThreadScheduledExecutor();
-    private ScheduledFuture<?> scheduledFuture = null;
+    private ScheduledFuture<?> scheduledFuture;
+    private final HashMap<String, List<StopPoint>> stopPointCache = new HashMap<>();
+    private Boolean isInternalChange = false;
 
     @FXML private TextField start;
     @FXML private ListView<StopPoint> startList;
@@ -87,14 +91,46 @@ public class RouteController extends ControllerHelper {
     }
 
     public void handleQuery(String query, ObservableList<StopPoint> listDataView) {
-        if (query.length() <= MIN_QUERY_LENGTH || isInternalChange) return;
+        if (isInternalChange) return;
 
-        // Make sure that the previous query is canceled, constraining the number of ongoing
-        // requests to 1
+        if (!updateDataViewFromCachedStopPoints(query, listDataView)) {
+            updateDataViewFromStopPoints(query, listDataView);
+        }
+    }
+
+    public boolean updateDataViewFromCachedStopPoints(
+            String query, ObservableList<StopPoint> listDataView) {
+        // See:
+        // https://stackoverflow.com/questions/327513/fuzzy-string-search-library-in-java
+        // https://commons.apache.org/proper/commons-text/javadocs/api-release/org/apache/commons/text/similarity/LevenshteinDistance.html
+        String closestQuery = null;
+        int closestDistance = Integer.MAX_VALUE;
+        LevenshteinDistance ld = new LevenshteinDistance();
+
+        for (String cachedQuery : stopPointCache.keySet()) {
+            int distance = ld.apply(cachedQuery, query.toLowerCase());
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestQuery = cachedQuery;
+            }
+        }
+        if ((closestDistance > LEVENSHTEIN_THRESHOLD || closestQuery == null)
+                && query.length() >= MIN_QUERY_LENGTH) return false;
+
+        var stopPoints = stopPointCache.get(closestQuery);
+        if (stopPoints == null) return false;
+
+        listDataView.clear();
+        listDataView.addAll(stopPoints);
+        return true;
+    }
+
+    public void updateDataViewFromStopPoints(String query, ObservableList<StopPoint> listDataView) {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
+            // Make sure that the network previous query is canceled,
+            // constraining the number of ongoing requests to 1
             scheduledFuture.cancel(true);
         }
-
         scheduledFuture =
                 executorService.schedule(
                         () -> {
@@ -106,11 +142,13 @@ public class RouteController extends ControllerHelper {
 
                                 Platform.runLater(
                                         () -> {
+                                            var stopPoints = new ArrayList<StopPoint>();
+                                            for (var item : response.body())
+                                                stopPoints.add(new StopPoint(item));
+
                                             listDataView.clear();
-                                            for (var item : response.body()) {
-                                                var stopPoint = new StopPoint(item);
-                                                listDataView.add(stopPoint);
-                                            }
+                                            listDataView.addAll(stopPoints);
+                                            stopPointCache.put(query.toLowerCase(), stopPoints);
                                         });
                             } catch (IOException e) {
                                 // TODO Show toast error
