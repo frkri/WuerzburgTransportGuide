@@ -4,8 +4,7 @@ import io.github.wuerzburgtransportguide.SceneController;
 import io.github.wuerzburgtransportguide.api.NetzplanApi;
 import io.github.wuerzburgtransportguide.view.ControllerHelper;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -18,8 +17,11 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
 
 public class RouteController extends ControllerHelper {
+
+    private final int MIN_QUERY_LENGTH = 2;
 
     private final ObservableList<StopPoint> startListDataView =
             FXCollections.observableArrayList(new ArrayList<>());
@@ -29,6 +31,7 @@ public class RouteController extends ControllerHelper {
 
     private StopPoint selectedStart;
     private StopPoint selectedDestination;
+    private Boolean isInternalChange = false;
 
     @FXML private TextField start;
     @FXML private ListView<StopPoint> startList;
@@ -51,98 +54,71 @@ public class RouteController extends ControllerHelper {
         startList.setItems(startListDataView);
         destinationList.setItems(destinationListDataView);
 
-        searchButton.setOnAction(
-                value -> {
-                    showAvailableRoutes().showAndWait();
-                });
+        searchButton.setOnAction(value -> showAvailableRoutes().showAndWait());
 
         start.textProperty()
-                .addListener(
-                        new ChangeListener<String>() {
-                            @Override
-                            public void changed(
-                                    ObservableValue<? extends String> observableValue,
-                                    String s,
-                                    String t1) {
-                                try {
-                                    var query = observableValue.getValue();
-                                    if (query.length() <= 2) return;
-                                    startListDataView.clear();
-
-                                    // TODO async fetch
-                                    updateListFromQuery(query, startListDataView);
-                                } catch (IOException e) {
-                                    // TODO Show toast error
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                        });
+                .addListener((observableValue, s, t1) -> handleQuery(t1, startListDataView));
 
         destination
                 .textProperty()
-                .addListener(
-                        new ChangeListener<String>() {
-                            @Override
-                            public void changed(
-                                    ObservableValue<? extends String> observableValue,
-                                    String s,
-                                    String t1) {
-                                try {
-                                    var query = observableValue.getValue();
-                                    if (query.length() <= 2) return;
-                                    destinationListDataView.clear();
-
-                                    // TODO async fetch
-                                    updateListFromQuery(query, destinationListDataView);
-                                } catch (IOException e) {
-                                    // TODO Show toast error
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                        });
+                .addListener((observableValue, s, t1) -> handleQuery(t1, destinationListDataView));
 
         startList
                 .getSelectionModel()
                 .selectedItemProperty()
                 .addListener(
-                        new ChangeListener<StopPoint>() {
-                            @Override
-                            public void changed(
-                                    ObservableValue<? extends StopPoint> observableValue,
-                                    StopPoint stopPoint,
-                                    StopPoint t1) {
-                                selectedStart = observableValue.getValue();
-                                if (selectedStart != null) start.setText(selectedStart.toString());
-                            }
+                        (observableValue, stopPoint, t1) -> {
+                            if (t1 == null) return;
+                            isInternalChange = true;
+                            start.setText(t1.toString());
+                            isInternalChange = false;
                         });
 
         destinationList
                 .getSelectionModel()
                 .selectedItemProperty()
                 .addListener(
-                        new ChangeListener<StopPoint>() {
-                            @Override
-                            public void changed(
-                                    ObservableValue<? extends StopPoint> observableValue,
-                                    StopPoint stopPoint,
-                                    StopPoint t1) {
-                                selectedDestination = observableValue.getValue();
-                                if (selectedDestination != null)
-                                    destination.setText(selectedDestination.toString());
-                            }
+                        (observableValue, stopPoint, t1) -> {
+                            if (t1 == null) return;
+                            isInternalChange = true;
+                            destination.setText(t1.toString());
+                            isInternalChange = false;
                         });
     }
 
-    public void updateListFromQuery(String query, ObservableList<StopPoint> listDataView)
-            throws IOException {
-        var request = apiService.getPlaces("de-de", query);
-        var response = request.execute();
-        if (!response.isSuccessful() || response.body() == null)
-            throw new IOException("Query has failed");
-        for (var item : response.body()) {
-            var stopPoint = new StopPoint(item);
-            listDataView.add(stopPoint);
+    public void handleQuery(String query, ObservableList<StopPoint> listDataView) {
+        if (query.length() <= MIN_QUERY_LENGTH || isInternalChange) return;
+
+        listDataView.clear();
+        try {
+            updateListFromQuery(query, listDataView);
+        } catch (RuntimeException e) {
+            // TODO Show toast error
+            throw new RuntimeException(e);
         }
+    }
+
+    public void updateListFromQuery(String query, ObservableList<StopPoint> listDataView)
+            throws RuntimeException {
+        CompletableFuture.runAsync(
+                () -> {
+                    try {
+                        var request = apiService.getPlaces("de-de", query);
+                        var response = request.execute();
+                        if (!response.isSuccessful() || response.body() == null)
+                            throw new RuntimeException("Query has failed");
+
+                        Platform.runLater(
+                                () -> {
+                                    for (var item : response.body()) {
+                                        var stopPoint = new StopPoint(item);
+                                        listDataView.add(stopPoint);
+                                    }
+                                });
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
     }
 
     public Stage showAvailableRoutes() {
