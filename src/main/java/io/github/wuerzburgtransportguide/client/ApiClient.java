@@ -1,6 +1,13 @@
 package io.github.wuerzburgtransportguide.client;
 
-import io.github.wuerzburgtransportguide.client.componenents.*;
+import com.google.gson.GsonBuilder;
+
+import io.github.wuerzburgtransportguide.client.adapters.OffsetDateTimeDeserializer;
+import io.github.wuerzburgtransportguide.client.adapters.OffsetDateTimeSerializer;
+import io.github.wuerzburgtransportguide.client.componenents.FilteredCookieStore;
+import io.github.wuerzburgtransportguide.client.componenents.RequiredHeader;
+import io.github.wuerzburgtransportguide.client.componenents.RequiredHeadersInterceptor;
+import io.github.wuerzburgtransportguide.client.componenents.RequiredXsrfInterceptor;
 
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
@@ -8,6 +15,7 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 public class ApiClient {
@@ -37,11 +45,17 @@ public class ApiClient {
         okHttpClient.addInterceptor(
                 new RequiredXsrfInterceptor(cookieStore, List.of("https://netzplan.vvm-info.de/")));
 
+        var gson =
+                new GsonBuilder()
+                        .registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeSerializer())
+                        .registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeDeserializer())
+                        .create();
+
         retrofitClient =
                 new Retrofit.Builder()
                         .baseUrl(apiUrl)
                         .client(okHttpClient.build())
-                        .addConverterFactory(GsonConverterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create(gson))
                         .build();
     }
 
