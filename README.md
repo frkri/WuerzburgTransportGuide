@@ -22,7 +22,9 @@ The generated zip archive can be found under ``build/distributions``. It can be 
 
 This project uses the [Open API](https://www.openapis.org/what-is-openapi) specification that describes the [VVM Netzplan](https://netzplan.vvm-info.de/) REST API.
 This helps us generate the required interface for the [Retrofit](https://square.github.io/retrofit/) HTTP client library.
-Using the ``build`` or ``openApiGenerate`` Gradle task will generate the required code.
+Using the ``build`` or ``openApiGenerate`` Gradle task will generate the required code (API and Models).
+Further custom models (that are not generated) can be added by placing them under ``src/main/java/io.github.wuerzburgtransportguide/model`` and then adding them to the ``openApiGenerate`` task.
+Furthermore, the Gson needs to be updated to include the new model with registerTypeAdapter.
 
 The source specification file can be found under ``specs/netzplan.yml`` which itself is generated using [mitmproxy2swagger](https://github.com/alufers/mitmproxy2swagger).
 
