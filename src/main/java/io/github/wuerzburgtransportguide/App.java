@@ -17,7 +17,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
         var apiBuilder = new ApiClient("https://netzplan.vvm-info.de/api/");
-        var apiService = apiBuilder.createClientService(NetzplanApi.class);
+        var netzplanService = apiBuilder.createClientService(NetzplanApi.class);
 
         var basePath = "pages/";
         var pages =
@@ -26,7 +26,7 @@ public class App extends Application {
                         basePath + "route/route.fxml",
                         basePath + "map/map.fxml");
         var sceneController = new SceneController(stage, pages, 800, 500);
-        var injectorLoader = getDependencyInjectorLoader(apiService, sceneController);
+        var injectorLoader = getDependencyInjectorLoader(netzplanService, sceneController);
         sceneController.setDependencyInjectorLoader(injectorLoader);
 
         try {

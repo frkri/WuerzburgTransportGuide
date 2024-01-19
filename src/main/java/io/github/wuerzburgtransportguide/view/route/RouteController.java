@@ -135,7 +135,7 @@ public class RouteController extends ControllerHelper {
                 executorService.schedule(
                         () -> {
                             try {
-                                var request = apiService.getPlaces("de-de", query);
+                                var request = netzplanService.getPlaces("de-de", query);
                                 var response = request.execute();
                                 if (!response.isSuccessful() || response.body() == null)
                                     throw new RuntimeException("Query has failed");
