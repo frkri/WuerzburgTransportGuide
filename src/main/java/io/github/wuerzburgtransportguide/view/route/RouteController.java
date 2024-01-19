@@ -2,6 +2,7 @@ package io.github.wuerzburgtransportguide.view.route;
 
 import io.github.wuerzburgtransportguide.SceneController;
 import io.github.wuerzburgtransportguide.api.NetzplanApi;
+import io.github.wuerzburgtransportguide.model.GetPlaces200ResponseInner;
 import io.github.wuerzburgtransportguide.view.ControllerHelper;
 
 import javafx.application.Platform;
@@ -9,6 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
@@ -29,22 +31,22 @@ public class RouteController extends ControllerHelper {
     private static final int QUERY_DELAY = 200;
     private static final int LEVENSHTEIN_THRESHOLD = 3;
 
-    private final ObservableList<StopPoint> startListDataView =
+    private final ObservableList<GetPlaces200ResponseInner> startListDataView =
             FXCollections.observableArrayList(new ArrayList<>());
 
-    private final ObservableList<StopPoint> destinationListDataView =
+    private final ObservableList<GetPlaces200ResponseInner> destinationListDataView =
             FXCollections.observableArrayList(new ArrayList<>());
 
     private final ScheduledExecutorService executorService =
             Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> scheduledFuture;
-    private final HashMap<String, List<StopPoint>> stopPointCache = new HashMap<>();
+    private final HashMap<String, List<GetPlaces200ResponseInner>> stopPointCache = new HashMap<>();
     private Boolean isInternalChange = false;
 
     @FXML private TextField start;
-    @FXML private ListView<StopPoint> startList;
+    @FXML private ListView<GetPlaces200ResponseInner> startList;
     @FXML private TextField destination;
-    @FXML private ListView<StopPoint> destinationList;
+    @FXML private ListView<GetPlaces200ResponseInner> destinationList;
     @FXML private Button searchButton;
 
     public RouteController() {
@@ -56,13 +58,15 @@ public class RouteController extends ControllerHelper {
     }
 
     public void initialize() {
+        searchButton.setOnAction(value -> showAvailableRoutes().showAndWait());
+
+        destinationList.setCellFactory(RouteController::createCellCallback);
+        startList.setCellFactory(RouteController::createCellCallback);
         startList.setItems(startListDataView);
         destinationList.setItems(destinationListDataView);
-        searchButton.setOnAction(value -> showAvailableRoutes().showAndWait());
 
         start.textProperty()
                 .addListener((observableValue, s, t1) -> handleQuery(t1, startListDataView));
-
         destination
                 .textProperty()
                 .addListener((observableValue, s, t1) -> handleQuery(t1, destinationListDataView));
@@ -74,7 +78,7 @@ public class RouteController extends ControllerHelper {
                         (observableValue, stopPoint, t1) -> {
                             if (t1 == null) return;
                             isInternalChange = true;
-                            start.setText(t1.toString());
+                            start.setText(t1.getName());
                             isInternalChange = false;
                         });
 
@@ -85,12 +89,27 @@ public class RouteController extends ControllerHelper {
                         (observableValue, stopPoint, t1) -> {
                             if (t1 == null) return;
                             isInternalChange = true;
-                            destination.setText(t1.toString());
+                            destination.setText(t1.getName());
                             isInternalChange = false;
                         });
     }
 
-    public void handleQuery(String query, ObservableList<StopPoint> listDataView) {
+    private static ListCell<GetPlaces200ResponseInner> createCellCallback(
+            ListView<GetPlaces200ResponseInner> listView) {
+        return new ListCell<>() {
+            @Override
+            protected void updateItem(GetPlaces200ResponseInner item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setText(null);
+                } else {
+                    setText(item.getName());
+                }
+            }
+        };
+    }
+
+    public void handleQuery(String query, ObservableList<GetPlaces200ResponseInner> listDataView) {
         if (isInternalChange) return;
 
         if (!updateDataViewFromCachedStopPoints(query, listDataView)) {
@@ -99,16 +118,15 @@ public class RouteController extends ControllerHelper {
     }
 
     public boolean updateDataViewFromCachedStopPoints(
-            String query, ObservableList<StopPoint> listDataView) {
+            String query, ObservableList<GetPlaces200ResponseInner> listDataView) {
         // See:
         // https://stackoverflow.com/questions/327513/fuzzy-string-search-library-in-java
         // https://commons.apache.org/proper/commons-text/javadocs/api-release/org/apache/commons/text/similarity/LevenshteinDistance.html
         String closestQuery = null;
         int closestDistance = Integer.MAX_VALUE;
-        LevenshteinDistance ld = new LevenshteinDistance();
 
         for (String cachedQuery : stopPointCache.keySet()) {
-            int distance = ld.apply(cachedQuery, query.toLowerCase());
+            int distance = new LevenshteinDistance().apply(cachedQuery, query.toLowerCase());
             if (distance < closestDistance) {
                 closestDistance = distance;
                 closestQuery = cachedQuery;
@@ -125,9 +143,10 @@ public class RouteController extends ControllerHelper {
         return true;
     }
 
-    public void updateDataViewFromStopPoints(String query, ObservableList<StopPoint> listDataView) {
+    public void updateDataViewFromStopPoints(
+            String query, ObservableList<GetPlaces200ResponseInner> listDataView) {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
-            // Make sure that the network previous query is canceled,
+            // Make sure that the previous network query is canceled,
             // constraining the number of ongoing requests to 1
             scheduledFuture.cancel(true);
         }
@@ -142,13 +161,10 @@ public class RouteController extends ControllerHelper {
 
                                 Platform.runLater(
                                         () -> {
-                                            var stopPoints = new ArrayList<StopPoint>();
-                                            for (var item : response.body())
-                                                stopPoints.add(new StopPoint(item));
-
                                             listDataView.clear();
-                                            listDataView.addAll(stopPoints);
-                                            stopPointCache.put(query.toLowerCase(), stopPoints);
+                                            listDataView.addAll(response.body());
+                                            stopPointCache.put(
+                                                    query.toLowerCase(), response.body());
                                         });
                             } catch (IOException e) {
                                 // TODO Show toast error
