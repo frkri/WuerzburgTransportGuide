@@ -2,12 +2,13 @@ package io.github.wuerzburgtransportguide.client;
 
 import com.google.gson.GsonBuilder;
 
-import io.github.wuerzburgtransportguide.client.adapters.OffsetDateTimeDeserializer;
-import io.github.wuerzburgtransportguide.client.adapters.OffsetDateTimeSerializer;
+import io.github.wuerzburgtransportguide.client.adapters.*;
 import io.github.wuerzburgtransportguide.client.componenents.FilteredCookieStore;
 import io.github.wuerzburgtransportguide.client.componenents.RequiredHeader;
 import io.github.wuerzburgtransportguide.client.componenents.RequiredHeadersInterceptor;
 import io.github.wuerzburgtransportguide.client.componenents.RequiredXsrfInterceptor;
+import io.github.wuerzburgtransportguide.model.Coords;
+import io.github.wuerzburgtransportguide.model.CoordsList;
 
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
@@ -15,8 +16,11 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Locale;
 
 public class ApiClient {
     private final Retrofit retrofitClient;
@@ -45,10 +49,20 @@ public class ApiClient {
         okHttpClient.addInterceptor(
                 new RequiredXsrfInterceptor(cookieStore, List.of("https://netzplan.vvm-info.de/")));
 
+        // GSON with adapter for vanilla and custom types
         var gson =
                 new GsonBuilder()
                         .registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeSerializer())
                         .registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeDeserializer())
+                        .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
+                        .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
+                        .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
+                        .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
+                        .registerTypeAdapter(Coords.class, new CoordsSerializer())
+                        .registerTypeAdapter(Coords.class, new CoordsDeserializer())
+                        .registerTypeAdapter(CoordsList.class, new CoordsListSerializer())
+                        .registerTypeAdapter(CoordsList.class, new CoordsListDeserializer())
+                        .registerTypeAdapter(Locale.class, new LocaleSerializer())
                         .create();
 
         retrofitClient =

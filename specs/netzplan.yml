@@ -13,8 +13,8 @@ paths:
       tags:
         - netzplan
       responses:
-        '200':
-          description: OK
+        "200":
+          description: List of departures of the given stop
           content:
             application/json:
               schema:
@@ -56,6 +56,7 @@ paths:
               schema:
                 type: string
       parameters:
+        - $ref: "#/components/parameters/Locale"
         - name: stationId
           description: The ID of the stop, also called idefa in the EFA API
           example: de:09663:436
@@ -63,25 +64,39 @@ paths:
           required: true
           schema:
             type: string
-        - name: locale
-          examples:
-            en:
-              value: en-us
-            de:
-              value: de-de
+  /journeyplanners/efa_xml/places:
+    get:
+      operationId: getPlaces
+      summary:
+        Search for places similar to the given name query, can be used for
+        autocomplete in input fields
+      tags:
+        - netzplan
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Poi"
+      parameters:
+        - $ref: "#/components/parameters/Locale"
+        - name: term
           in: query
           required: false
           schema:
             type: string
-  /journeyplanners/efa_xml/places:
-    get:
-      operationId: getPlaces
-      summary: Search for places similar to the given name query, can be used for autocomplete in input fields
+  /journeyplanners/efa_xml/journeys:
+    post:
+      operationId: getJourneys
+      summary: Retrieve journeys between two locations at a given time
       tags:
         - netzplan
       responses:
-        '200':
-          description: OK
+        "200":
+          description: List of journeys with start and end time, duration and connections
           content:
             application/json:
               schema:
@@ -89,34 +104,220 @@ paths:
                 items:
                   type: object
                   properties:
-                    title:
+                    alternative:
                       type: string
-                    name:
+                    distance:
                       type: string
-                    type:
+                    duration:
                       type: string
-                    idefa:
+                    interchange:
                       type: string
-                    centerx:
-                      type: number
-                    centery:
-                      type: number
+                    legs:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          timeMinute:
+                            type: string
+                          mode:
+                            type: object
+                            properties:
+                              code:
+                                type: integer
+                              destination:
+                                type: string
+                                description: Name of the destination
+                              name:
+                                type: string
+                              product:
+                                type: string
+                              destID:
+                                type: string
+                              mtSubcode:
+                                type: integer
+                              symbol:
+                                type: string
+                              type:
+                                type: string
+                          info:
+                            type: array
+                            items: {}
+                          points:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                usage:
+                                  type: string
+                                dateTime:
+                                  type: object
+                                  properties:
+                                    date:
+                                      type: string
+                                      format: date
+                                      example: 17.01.2024
+                                    rtDate:
+                                      type: string
+                                      format: date
+                                      example: 17.01.2024
+                                    time:
+                                      type: string
+                                      format: time
+                                      example: 16:35
+                                    rtTime:
+                                      type: string
+                                      format: time
+                                      example: 16:35
+                                name:
+                                  type: string
+                                nameWO:
+                                  type: string
+                                place:
+                                  type: string
+                                platformName:
+                                  type: string
+                                pointType:
+                                  type: string
+                                plannedPlatformName:
+                                  type: string
+                                placeID:
+                                  type: string
+                                ref:
+                                  type: object
+                                  properties:
+                                    coords:
+                                      type: string
+                                      format: coords
+                                    platform:
+                                      type: string
+                          stopSeq:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                name:
+                                  type: string
+                                nameWO:
+                                  type: string
+                                place:
+                                  type: string
+                                platformName:
+                                  type: string
+                                placeID:
+                                  type: integer
+                                ref:
+                                  type: object
+                                  properties:
+                                    coords:
+                                      type: string
+                                    platform:
+                                      type: string
+                                    depDelay:
+                                      type: integer
+                                    depValid:
+                                      type: integer
+                                    arrDelay:
+                                      type: integer
+                                    arrValid:
+                                      type: integer
+                                    arrDateTime:
+                                      type: string
+                                      format: localDateTime
+                                      nullable: true
+                                    depDateTime:
+                                      type: string
+                                      format: localDateTime
+                                      nullable: true
+                          path:
+                            type: string
+                            format: coordsList
+                    products:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          icon:
+                            type: string
+                            format: url
+                          icon_path:
+                            type: string
+                          title:
+                            type: string
+                            nullable: true
       parameters:
-        - name: locale
-          examples:
-            en:
-              value: en-us
-            de:
-              value: de-de
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: term
-          in: query
-          required: false
-          schema:
-            type: string
+        - $ref: "#/components/parameters/Locale"
+      requestBody:
+        required: true
+        description:
+          Must contain origin, destination, date and time. Origin and destination
+          can be retrieved from the places endpoint.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                origin:
+                  $ref: "#/components/schemas/Poi"
+                destination:
+                  $ref: "#/components/schemas/Poi"
+                date:
+                  type: string
+                  format: date-time
+                time:
+                  type: string
+                  format: date-time
+                departure:
+                  type: integer
+                  description: Unknown purpose, should be 1 for the time being
+                  default: 1
+                options:
+                  type: object
+                  description: Unknown purpose, should be null for the time being
+                  nullable: true
+
+components:
+  schemas:
+    Poi:
+      type: object
+      properties:
+        title:
+          type: string
+        name:
+          type: string
+        type:
+          $ref: "#/components/schemas/PoiType"
+        idefa:
+          type: string
+          example: de:09663:436
+        centerx:
+          type: number
+          format: double
+        centery:
+          type: number
+          format: double
+
+    PoiType:
+      type: string
+      enum:
+        - stop
+        - poi
+        - street
+
+  parameters:
+    Locale:
+      name: locale
+      in: query
+      description: The locale to use for the response. Must be a valid IETF language tag (IETF BCP 47)
+      required: false
+      schema:
+        type: string
+        format: locale
+      examples:
+        en:
+          value: en-us
+        de:
+          value: de-de
+
 x-path-templates:
   # Remove the ignore: prefix to generate an endpoint with its URL
   # Lines that are closer to the top take precedence, the matching is greedy
@@ -124,3 +325,4 @@ x-path-templates:
   - ignore:/maps/tlnp/layersets
   - ignore:/wms-layers/wvvwuerzburg_haltestellen_gesamt/features
   - ignore:/journeyplanners/efa_xml/locations
+  - ignore:/search-radius
