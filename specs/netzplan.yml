@@ -4,7 +4,17 @@ info:
   version: 1.0.0
 servers:
   - url: https://netzplan.vvm-info.de/api
-    description: The Netzplan API
+    description: |
+      The Netzplan API is a collection of endpoints that provide information about the public transport network in the VVM area.
+      The API is used by the [netzplan.vvm-info.de](https://netzplan.vvm-info.de/api), it is not intended for external use.
+      
+      The API requires a valid CSRF token to be sent in the `X-XSRF-Token` header. The token can be retrieved from the `XSRF-TOKEN` cookie that is set when visiting the website and must be sent on further request.
+      Also the cookie `laravel_token`, which serves the purpose of a session cookie, is required to be sent in the `Cookie` header.
+      This is not defined in the OpenAPI specification, but is required for the API to work.
+      See [this](https://en.wikipedia.org/wiki/Cross-site_request_forgery#Cookie-to-header_token) Wikipedia page for more info.
+      
+      In addition the spec defines custom formats for the `coords`, `coordsList`, `localDateTime` and other types to help with the usage of the API in code.
+      The Java implementation can be found in ``io.github.wuerzburgtransportguide.client.adapters`` for the GSON adapters and ``io.github.wuerzburgtransportguide.client.model`` for the models.
 paths:
   /journeyplanners/efa_xml/locations/{stationId}/stationboard/departure:
     get:
@@ -73,6 +83,16 @@ paths:
       tags:
         - netzplan
       responses:
+        "500":
+          description: API could not find any places for the given query or an error occurred. Its probably the first one.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Server Error
         "200":
           description: OK
           content:
@@ -141,7 +161,7 @@ paths:
                                 type: string
                           info:
                             type: array
-                            items: {}
+                            items: { }
                           points:
                             type: array
                             items:
