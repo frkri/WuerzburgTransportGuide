@@ -12,13 +12,9 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,7 +43,7 @@ public class RouteController extends ControllerHelper implements IMapContext {
     @FXML private ListView<Poi> startList;
     @FXML private TextField destination;
     @FXML private ListView<Poi> destinationList;
-    @FXML private Button searchButton;
+
     private MapContext mapContext;
 
     public RouteController() {
@@ -59,7 +55,6 @@ public class RouteController extends ControllerHelper implements IMapContext {
     }
 
     public void initialize() {
-        searchButton.setOnAction(value -> showAvailableRoutes().showAndWait());
 
         destinationList.setCellFactory(RouteController::createCellCallback);
         startList.setCellFactory(RouteController::createCellCallback);
@@ -138,18 +133,8 @@ public class RouteController extends ControllerHelper implements IMapContext {
                         TimeUnit.MILLISECONDS);
     }
 
-    public Stage showAvailableRoutes() {
-        Stage stage = new Stage();
-        stage.initModality(Modality.APPLICATION_MODAL);
-
-        stage.setWidth(200);
-        stage.setHeight(200);
-        stage.setX(500);
-        stage.setY(500);
-
-        Pane pane = new Pane();
-        stage.setScene(pane.getScene());
-        return stage;
+    public void showAvailableRoutes() {
+        sceneController.showPopUp("pages/route/availableRoutes/availableRoutes.fxml");
     }
 
     @Override

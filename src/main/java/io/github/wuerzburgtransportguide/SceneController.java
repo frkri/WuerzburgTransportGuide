@@ -1,6 +1,7 @@
 package io.github.wuerzburgtransportguide;
 
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.List;
@@ -59,5 +60,13 @@ public class SceneController {
         var loaded = dependencyInjectorLoader.load(pagesPaths.get(index));
         primaryStage.setScene(new Scene(loaded, defaultSceneWidth, defaultSceneHeight));
         currentIndex = index;
+    }
+
+    public void showPopUp(String path) {
+        Stage popUpStage = new Stage();
+        popUpStage.initModality(Modality.APPLICATION_MODAL);
+        var loaded = dependencyInjectorLoader.load(path);
+        popUpStage.setScene(new Scene(loaded, defaultSceneWidth, defaultSceneHeight));
+        popUpStage.showAndWait();
     }
 }
