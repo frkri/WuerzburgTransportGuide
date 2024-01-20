@@ -19,11 +19,6 @@ module io.github.wuerzburgtransportguide {
     exports io.github.wuerzburgtransportguide.api;
     exports io.github.wuerzburgtransportguide.model;
     exports io.github.wuerzburgtransportguide;
-    exports io.github.wuerzburgtransportguide.view;
-
-    opens io.github.wuerzburgtransportguide.view to
-            javafx.fxml;
-
     exports io.github.wuerzburgtransportguide.view.pages.map;
 
     opens io.github.wuerzburgtransportguide.view.pages.map to
