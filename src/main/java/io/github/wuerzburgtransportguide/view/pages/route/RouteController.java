@@ -4,6 +4,8 @@ import io.github.wuerzburgtransportguide.SceneController;
 import io.github.wuerzburgtransportguide.api.NetzplanApi;
 import io.github.wuerzburgtransportguide.cache.StopPointCache;
 import io.github.wuerzburgtransportguide.model.Poi;
+import io.github.wuerzburgtransportguide.view.context.IMapContext;
+import io.github.wuerzburgtransportguide.view.context.MapContext;
 import io.github.wuerzburgtransportguide.view.pages.ControllerHelper;
 
 import javafx.application.Platform;
@@ -23,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.*;
 
-public class RouteController extends ControllerHelper {
+public class RouteController extends ControllerHelper implements IMapContext {
 
     private static final int MIN_QUERY_LENGTH = 2;
     private static final int QUERY_DELAY = 200;
@@ -46,6 +48,7 @@ public class RouteController extends ControllerHelper {
     @FXML private TextField destination;
     @FXML private ListView<Poi> destinationList;
     @FXML private Button searchButton;
+    private MapContext mapContext;
 
     public RouteController() {
         super();
@@ -147,5 +150,10 @@ public class RouteController extends ControllerHelper {
         Pane pane = new Pane();
         stage.setScene(pane.getScene());
         return stage;
+    }
+
+    @Override
+    public void setMapContext(MapContext mapContext) {
+        this.mapContext = mapContext;
     }
 }
