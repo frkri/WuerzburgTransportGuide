@@ -2,6 +2,7 @@ package io.github.wuerzburgtransportguide.view.route;
 
 import io.github.wuerzburgtransportguide.SceneController;
 import io.github.wuerzburgtransportguide.api.NetzplanApi;
+import io.github.wuerzburgtransportguide.cache.StopPointCache;
 import io.github.wuerzburgtransportguide.model.Poi;
 import io.github.wuerzburgtransportguide.view.ControllerHelper;
 
@@ -17,12 +18,8 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import org.apache.commons.text.similarity.LevenshteinDistance;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.*;
 
@@ -30,7 +27,7 @@ public class RouteController extends ControllerHelper {
 
     private static final int MIN_QUERY_LENGTH = 2;
     private static final int QUERY_DELAY = 200;
-    private static final int LEVENSHTEIN_THRESHOLD = 3;
+    private static final int CACHE_MATCH_THRESHOLD = 3;
 
     private final ObservableList<Poi> startListDataView =
             FXCollections.observableArrayList(new ArrayList<>());
@@ -41,7 +38,7 @@ public class RouteController extends ControllerHelper {
     private final ScheduledExecutorService executorService =
             Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> scheduledFuture;
-    private final HashMap<String, List<Poi>> stopPointCache = new HashMap<>();
+    private final StopPointCache stopPointCache = new StopPointCache(CACHE_MATCH_THRESHOLD);
     private Boolean isInternalChange = false;
 
     @FXML private TextField start;
@@ -71,7 +68,6 @@ public class RouteController extends ControllerHelper {
         destination
                 .textProperty()
                 .addListener((observableValue, s, t1) -> handleQuery(t1, destinationListDataView));
-
         startList
                 .getSelectionModel()
                 .selectedItemProperty()
@@ -82,7 +78,6 @@ public class RouteController extends ControllerHelper {
                             start.setText(t1.getName());
                             isInternalChange = false;
                         });
-
         destinationList
                 .getSelectionModel()
                 .selectedItemProperty()
@@ -112,62 +107,28 @@ public class RouteController extends ControllerHelper {
     public void handleQuery(String query, ObservableList<Poi> listDataView) {
         if (isInternalChange) return;
 
-        if (!updateDataViewFromCachedStopPoints(query, listDataView)) {
-            updateDataViewFromStopPoints(query, listDataView);
-        }
-    }
+        var stopPoints = stopPointCache.get(query);
+        if (stopPoints != null) Platform.runLater(() -> listDataView.setAll(stopPoints));
 
-    public boolean updateDataViewFromCachedStopPoints(
-            String query, ObservableList<Poi> listDataView) {
-        // See:
-        // https://stackoverflow.com/questions/327513/fuzzy-string-search-library-in-java
-        // https://commons.apache.org/proper/commons-text/javadocs/api-release/org/apache/commons/text/similarity/LevenshteinDistance.html
-        String closestQuery = null;
-        int closestDistance = Integer.MAX_VALUE;
-
-        for (String cachedQuery : stopPointCache.keySet()) {
-            int distance = new LevenshteinDistance().apply(cachedQuery, query.toLowerCase());
-            if (distance < closestDistance) {
-                closestDistance = distance;
-                closestQuery = cachedQuery;
-            }
-        }
-        if ((closestDistance > LEVENSHTEIN_THRESHOLD || closestQuery == null)
-                && query.length() >= MIN_QUERY_LENGTH) return false;
-
-        var stopPoints = stopPointCache.get(closestQuery);
-        if (stopPoints == null) return false;
-
-        listDataView.clear();
-        listDataView.addAll(stopPoints);
-        return true;
-    }
-
-    public void updateDataViewFromStopPoints(String query, ObservableList<Poi> listDataView) {
-        if (scheduledFuture != null && !scheduledFuture.isDone()) {
-            // Make sure that the previous network query is canceled,
-            // constraining the number of ongoing requests to 1
-            scheduledFuture.cancel(true);
-        }
+        if (scheduledFuture != null && !scheduledFuture.isDone()) scheduledFuture.cancel(false);
+        if (query.length() <= MIN_QUERY_LENGTH) return;
         scheduledFuture =
                 executorService.schedule(
                         () -> {
                             try {
                                 var request = netzplanService.getPlaces(Locale.getDefault(), query);
                                 var response = request.execute();
-                                if (!response.isSuccessful() || response.body() == null)
-                                    throw new RuntimeException("Query has failed");
 
-                                Platform.runLater(
-                                        () -> {
-                                            listDataView.clear();
-                                            listDataView.addAll(response.body());
-                                            stopPointCache.put(
-                                                    query.toLowerCase(), response.body());
-                                        });
-                            } catch (IOException e) {
-                                // TODO Show toast error
-                                throw new RuntimeException(e);
+                                if (response.code() == 500)
+                                    throw new NotFoundException("Found no stops matching query");
+                                if (!response.isSuccessful() || response.body() == null)
+                                    throw new IOException("An error has occurred while querying");
+
+                                Platform.runLater(() -> listDataView.setAll(response.body()));
+                                stopPointCache.put(query, response.body());
+                            } catch (IOException | NotFoundException e) {
+                                // TODO Show Toast
+                                e.printStackTrace();
                             }
                         },
                         QUERY_DELAY,
