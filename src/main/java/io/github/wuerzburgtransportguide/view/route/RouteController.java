@@ -2,7 +2,7 @@ package io.github.wuerzburgtransportguide.view.route;
 
 import io.github.wuerzburgtransportguide.SceneController;
 import io.github.wuerzburgtransportguide.api.NetzplanApi;
-import io.github.wuerzburgtransportguide.model.GetPlaces200ResponseInner;
+import io.github.wuerzburgtransportguide.model.Poi;
 import io.github.wuerzburgtransportguide.view.ControllerHelper;
 
 import javafx.application.Platform;
@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.*;
 
 public class RouteController extends ControllerHelper {
@@ -31,22 +32,22 @@ public class RouteController extends ControllerHelper {
     private static final int QUERY_DELAY = 200;
     private static final int LEVENSHTEIN_THRESHOLD = 3;
 
-    private final ObservableList<GetPlaces200ResponseInner> startListDataView =
+    private final ObservableList<Poi> startListDataView =
             FXCollections.observableArrayList(new ArrayList<>());
 
-    private final ObservableList<GetPlaces200ResponseInner> destinationListDataView =
+    private final ObservableList<Poi> destinationListDataView =
             FXCollections.observableArrayList(new ArrayList<>());
 
     private final ScheduledExecutorService executorService =
             Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> scheduledFuture;
-    private final HashMap<String, List<GetPlaces200ResponseInner>> stopPointCache = new HashMap<>();
+    private final HashMap<String, List<Poi>> stopPointCache = new HashMap<>();
     private Boolean isInternalChange = false;
 
     @FXML private TextField start;
-    @FXML private ListView<GetPlaces200ResponseInner> startList;
+    @FXML private ListView<Poi> startList;
     @FXML private TextField destination;
-    @FXML private ListView<GetPlaces200ResponseInner> destinationList;
+    @FXML private ListView<Poi> destinationList;
     @FXML private Button searchButton;
 
     public RouteController() {
@@ -94,11 +95,10 @@ public class RouteController extends ControllerHelper {
                         });
     }
 
-    private static ListCell<GetPlaces200ResponseInner> createCellCallback(
-            ListView<GetPlaces200ResponseInner> listView) {
+    private static ListCell<Poi> createCellCallback(ListView<Poi> listView) {
         return new ListCell<>() {
             @Override
-            protected void updateItem(GetPlaces200ResponseInner item, boolean empty) {
+            protected void updateItem(Poi item, boolean empty) {
                 super.updateItem(item, empty);
                 if (item == null || empty) {
                     setText(null);
@@ -109,7 +109,7 @@ public class RouteController extends ControllerHelper {
         };
     }
 
-    public void handleQuery(String query, ObservableList<GetPlaces200ResponseInner> listDataView) {
+    public void handleQuery(String query, ObservableList<Poi> listDataView) {
         if (isInternalChange) return;
 
         if (!updateDataViewFromCachedStopPoints(query, listDataView)) {
@@ -118,7 +118,7 @@ public class RouteController extends ControllerHelper {
     }
 
     public boolean updateDataViewFromCachedStopPoints(
-            String query, ObservableList<GetPlaces200ResponseInner> listDataView) {
+            String query, ObservableList<Poi> listDataView) {
         // See:
         // https://stackoverflow.com/questions/327513/fuzzy-string-search-library-in-java
         // https://commons.apache.org/proper/commons-text/javadocs/api-release/org/apache/commons/text/similarity/LevenshteinDistance.html
@@ -143,8 +143,7 @@ public class RouteController extends ControllerHelper {
         return true;
     }
 
-    public void updateDataViewFromStopPoints(
-            String query, ObservableList<GetPlaces200ResponseInner> listDataView) {
+    public void updateDataViewFromStopPoints(String query, ObservableList<Poi> listDataView) {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             // Make sure that the previous network query is canceled,
             // constraining the number of ongoing requests to 1
@@ -154,7 +153,7 @@ public class RouteController extends ControllerHelper {
                 executorService.schedule(
                         () -> {
                             try {
-                                var request = netzplanService.getPlaces("de-de", query);
+                                var request = netzplanService.getPlaces(Locale.getDefault(), query);
                                 var response = request.execute();
                                 if (!response.isSuccessful() || response.body() == null)
                                     throw new RuntimeException("Query has failed");
