@@ -1,6 +1,6 @@
 # WuerzburgTransportGuide
 
-A simple Java desktop application that uses the [VVM Netzplan](https://netzplan.vvm-info.de/) to display public transport information for the city of Würzburg.
+A simple Java desktop application that uses the [VVM Netzplan](https://netzplan.vvm-info.de/) to display public transport information for the city of Würzburg and its districts.
 It is based on the [JavaFX](https://openjfx.io/) framework and uses the [Retrofit](https://square.github.io/retrofit/) HTTP client library to communicate with the VVM Netzplan API.
 
 VVM does not provide an official API for their Netzplan service, so this project uses a reverse engineered API specification. Consequently, the API may change at any time and without notice, treat it as uncompleted and unstable.
@@ -22,6 +22,29 @@ The generated zip archive can be found under ``build/distributions``. It can be 
 
 This project uses the [Open API](https://www.openapis.org/what-is-openapi) specification that describes the [VVM Netzplan](https://netzplan.vvm-info.de/) REST API.
 This helps us generate the required interface for the [Retrofit](https://square.github.io/retrofit/) HTTP client library.
-Using the ``build`` or ``openApiGenerate`` Gradle task will generate the required code.
+Using the ``build`` or ``openApiGenerate`` Gradle task will generate the required code (API and Models).
+Further custom models (that are not generated) can be added by placing them under ``src/main/java/io.github.wuerzburgtransportguide/model`` and then adding them to the ``openApiGenerate`` task.
+Furthermore, the Gson needs to be updated to include the new model with registerTypeAdapter.
 
-The source specification file can be found under ``specs/netzplan.yml``
+The source specification file can be found under ``specs/netzplan.yml`` which itself is generated using [mitmproxy2swagger](https://github.com/alufers/mitmproxy2swagger).
+
+```bash
+# Using your browser, navigate to the VVM Netzplan website and perform actions that you want to capture with your network tab open.
+# Then export the captured traffic as a HAR file. This can be done using the "Save all as HAR" option in the network tab.
+
+# Setup python virtual environment
+python -m venv venv
+
+# Activate virtual environment
+source venv/bin/activate
+# or on Windows
+venv\Scripts\activate.bat
+
+# Install mitmproxy2swagger
+pip install mitmproxy2swagger
+
+# Generate Open API specification from your HAR file
+mitmproxy2swagger -i <path-to-har-file> -o specs/netzplan.yml -p https://netzplan.vvm-info.de/api/
+```
+
+See the [mitmproxy2swagger](https://github.com/alufers/mitmproxy2swagger) Readme for further steps.

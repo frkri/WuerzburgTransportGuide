@@ -49,6 +49,7 @@ dependencies {
 	implementation 'com.google.code.gson:gson:2.10.1'
 	implementation 'com.gluonhq:maps:2.0.0-ea+6' exclude group: 'org.openjfx'
 	implementation 'jakarta.annotation:jakarta.annotation-api:3.0.0-M1'
+	implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
 	implementation 'org.jetbrains:annotations:24.1.0'
 	implementation 'org.apache.commons:commons-text:1.11.0'
 
@@ -68,6 +69,11 @@ openApiGenerate {
 	modelPackage.set("io.github.wuerzburgtransportguide.model")
 	ignoreFileOverride.set("$rootDir/specs/.openapi-generator-ignore")
 	configOptions.set([dateLibrary: "java8", useJakartaEe: "true"])
+
+	// Models can be found under io.github.wuerzburgtransportguide.model
+	// GSON Deserializers can be found under io.github.wuerzburgtransportguide.client.adapters
+	typeMappings.set(['string+coordinates':'Coordinates','string+coordinatesList':'CoordinatesList','string+locale':'Locale','string+localDateTime':'LocalDateTime','string+url':'URL'])
+	importMappings.set(['Coordinates':'io.github.wuerzburgtransportguide.model.Coordinates','CoordinatesList':'io.github.wuerzburgtransportguide.model.CoordinatesList','Locale':'java.util.Locale','LocalDateTime':'java.time.LocalDateTime','URL':'java.net.URL'])
 
 	generateApiDocumentation.set(false)
 	generateModelDocumentation.set(false)
