@@ -1,4 +1,4 @@
-package io.github.wuerzburgtransportguide.view;
+package io.github.wuerzburgtransportguide.view.pages;
 
 import io.github.wuerzburgtransportguide.SceneController;
 import io.github.wuerzburgtransportguide.api.NetzplanApi;

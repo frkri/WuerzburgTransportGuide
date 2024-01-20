@@ -1,4 +1,4 @@
-package io.github.wuerzburgtransportguide.view;
+package io.github.wuerzburgtransportguide.view.pages;
 
 import java.awt.Desktop;
 import java.io.IOException;

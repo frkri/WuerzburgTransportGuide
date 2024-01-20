@@ -1,4 +1,4 @@
-package io.github.wuerzburgtransportguide.view.map;
+package io.github.wuerzburgtransportguide.view.pages.map;
 
 import com.gluonhq.maps.MapPoint;
 

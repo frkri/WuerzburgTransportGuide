@@ -2,7 +2,7 @@ package io.github.wuerzburgtransportguide;
 
 import io.github.wuerzburgtransportguide.api.NetzplanApi;
 import io.github.wuerzburgtransportguide.client.ApiClient;
-import io.github.wuerzburgtransportguide.view.ControllerHelper;
+import io.github.wuerzburgtransportguide.view.pages.ControllerHelper;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -44,12 +44,12 @@ public class App extends Application {
                 controllerClass -> {
                     try {
                         if (controllerClass.getSuperclass().equals(ControllerHelper.class)) {
-                            return controllerClass
-                                    .getConstructor(NetzplanApi.class, SceneController.class)
-                                    .newInstance(apiService, sceneController);
                             // NOTE: Change the parameters to match the ControllerHelper.class
                             // constructor.
                             // Also change the args passed to the constructor, so it matches.
+                            return controllerClass
+                                    .getConstructor(NetzplanApi.class, SceneController.class)
+                                    .newInstance(apiService, sceneController);
                         } else {
                             return controllerClass.getConstructor().newInstance();
                         }

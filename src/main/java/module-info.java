@@ -24,18 +24,20 @@ module io.github.wuerzburgtransportguide {
     opens io.github.wuerzburgtransportguide.view to
             javafx.fxml;
 
-    exports io.github.wuerzburgtransportguide.view.map;
+    exports io.github.wuerzburgtransportguide.view.pages.map;
 
-    opens io.github.wuerzburgtransportguide.view.map to
+    opens io.github.wuerzburgtransportguide.view.pages.map to
             javafx.fxml;
 
-    exports io.github.wuerzburgtransportguide.view.route;
+    exports io.github.wuerzburgtransportguide.view.pages.route;
 
-    opens io.github.wuerzburgtransportguide.view.route to
+    opens io.github.wuerzburgtransportguide.view.pages.route to
             javafx.fxml;
 
-    exports io.github.wuerzburgtransportguide.view.start;
+    exports io.github.wuerzburgtransportguide.view.pages.start;
 
-    opens io.github.wuerzburgtransportguide.view.start to
+    opens io.github.wuerzburgtransportguide.view.pages.start to
             javafx.fxml;
+    exports io.github.wuerzburgtransportguide.view.pages;
+    opens io.github.wuerzburgtransportguide.view.pages to javafx.fxml;
 }

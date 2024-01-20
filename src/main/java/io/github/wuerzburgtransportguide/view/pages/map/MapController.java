@@ -1,12 +1,12 @@
-package io.github.wuerzburgtransportguide.view.map;
+package io.github.wuerzburgtransportguide.view.pages.map;
 
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
 
 import io.github.wuerzburgtransportguide.SceneController;
 import io.github.wuerzburgtransportguide.api.NetzplanApi;
-import io.github.wuerzburgtransportguide.view.ControllerHelper;
-import io.github.wuerzburgtransportguide.view.Util;
+import io.github.wuerzburgtransportguide.view.pages.ControllerHelper;
+import io.github.wuerzburgtransportguide.view.pages.Util;
 
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;

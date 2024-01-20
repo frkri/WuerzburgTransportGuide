@@ -1,8 +1,8 @@
-package io.github.wuerzburgtransportguide.view.start;
+package io.github.wuerzburgtransportguide.view.pages.start;
 
 import io.github.wuerzburgtransportguide.SceneController;
 import io.github.wuerzburgtransportguide.api.NetzplanApi;
-import io.github.wuerzburgtransportguide.view.ControllerHelper;
+import io.github.wuerzburgtransportguide.view.pages.ControllerHelper;
 
 public class StartController extends ControllerHelper {
     public StartController(NetzplanApi apiService, SceneController sceneController) {
