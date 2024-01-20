@@ -7,8 +7,8 @@ import io.github.wuerzburgtransportguide.client.componenents.FilteredCookieStore
 import io.github.wuerzburgtransportguide.client.componenents.RequiredHeader;
 import io.github.wuerzburgtransportguide.client.componenents.RequiredHeadersInterceptor;
 import io.github.wuerzburgtransportguide.client.componenents.RequiredXsrfInterceptor;
-import io.github.wuerzburgtransportguide.model.Coords;
-import io.github.wuerzburgtransportguide.model.CoordsList;
+import io.github.wuerzburgtransportguide.model.Coordinates;
+import io.github.wuerzburgtransportguide.model.CoordinatesList;
 
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
@@ -58,10 +58,11 @@ public class ApiClient {
                         .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
                         .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
                         .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
-                        .registerTypeAdapter(Coords.class, new CoordsSerializer())
-                        .registerTypeAdapter(Coords.class, new CoordsDeserializer())
-                        .registerTypeAdapter(CoordsList.class, new CoordsListSerializer())
-                        .registerTypeAdapter(CoordsList.class, new CoordsListDeserializer())
+                        .registerTypeAdapter(Coordinates.class, new CoordinatesSerializer())
+                        .registerTypeAdapter(Coordinates.class, new CoordinatesDeserializer())
+                        .registerTypeAdapter(CoordinatesList.class, new CoordinatesListSerializer())
+                        .registerTypeAdapter(
+                                CoordinatesList.class, new CoordinatesListDeserializer())
                         .registerTypeAdapter(Locale.class, new LocaleSerializer())
                         .create();
 

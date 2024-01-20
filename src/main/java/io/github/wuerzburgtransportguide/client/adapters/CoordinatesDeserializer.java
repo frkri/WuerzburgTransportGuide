@@ -2,16 +2,18 @@ package io.github.wuerzburgtransportguide.client.adapters;
 
 import com.google.gson.*;
 
-import io.github.wuerzburgtransportguide.model.Coords;
+import io.github.wuerzburgtransportguide.model.Coordinates;
 
 import java.lang.reflect.Type;
 
-public class CoordsDeserializer implements JsonDeserializer<Coords> {
+/** Adapter for a string containing a pair of coordinates. {@code "9.79948,49.87022"} */
+public class CoordinatesDeserializer implements JsonDeserializer<Coordinates> {
 
     @Override
-    public Coords deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+    public Coordinates deserialize(
+            JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException {
-        var coords = new Coords();
+        var coords = new Coordinates();
         var splitString = json.getAsString().split(",");
         coords.setLongitude(Double.parseDouble(splitString[0]));
         coords.setLatitude(Double.parseDouble(splitString[1]));

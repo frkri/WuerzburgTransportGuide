@@ -1,13 +1,13 @@
 package io.github.wuerzburgtransportguide.model;
 
 /** Pair of coordinates consisting of latitude and longitude. */
-public class Coords {
+public class Coordinates {
     private double latitude;
     private double longitude;
 
-    public Coords() {}
+    public Coordinates() {}
 
-    public Coords(double latitude, double longitude) {
+    public Coordinates(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }
