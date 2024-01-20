@@ -70,8 +70,8 @@ openApiGenerate {
 
 	// Models can be found under io.github.wuerzburgtransportguide.model
 	// GSON Deserializers can be found under io.github.wuerzburgtransportguide.client.adapters
-	typeMappings.set(['string+coords':'Coords','string+coordsList':'CoordsList','string+locale':'Locale','string+localDateTime':'LocalDateTime','string+url':'URL'])
-	importMappings.set(['Coords':'io.github.wuerzburgtransportguide.model.Coords','CoordsList':'io.github.wuerzburgtransportguide.model.CoordsList','Locale':'java.util.Locale','LocalDateTime':'java.time.LocalDateTime','URL':'java.net.URL'])
+	typeMappings.set(['string+coordinates':'Coordinates','string+coordinatesList':'CoordinatesList','string+locale':'Locale','string+localDateTime':'LocalDateTime','string+url':'URL'])
+	importMappings.set(['Coordinates':'io.github.wuerzburgtransportguide.model.Coordinates','CoordinatesList':'io.github.wuerzburgtransportguide.model.CoordinatesList','Locale':'java.util.Locale','LocalDateTime':'java.time.LocalDateTime','URL':'java.net.URL'])
 
 	generateApiDocumentation.set(false)
 	generateModelDocumentation.set(false)
