@@ -4,6 +4,7 @@ import io.github.wuerzburgtransportguide.SceneController;
 import io.github.wuerzburgtransportguide.api.NetzplanApi;
 import io.github.wuerzburgtransportguide.cache.StopPointCache;
 import io.github.wuerzburgtransportguide.model.Poi;
+import io.github.wuerzburgtransportguide.model.PoiType;
 import io.github.wuerzburgtransportguide.view.context.IMapContext;
 import io.github.wuerzburgtransportguide.view.context.MapContext;
 import io.github.wuerzburgtransportguide.view.pages.ControllerHelper;
@@ -118,8 +119,13 @@ public class RouteController extends ControllerHelper implements IMapContext {
                                 if (!response.isSuccessful() || response.body() == null)
                                     throw new IOException("An error has occurred while querying");
 
-                                Platform.runLater(() -> listDataView.setAll(response.body()));
-                                stopPointCache.put(query, response.body());
+                                var filteredStops =
+                                        response.body().stream()
+                                                .filter(poi -> poi.getType() == PoiType.STOP)
+                                                .toList();
+
+                                Platform.runLater(() -> listDataView.setAll(filteredStops));
+                                stopPointCache.put(query, filteredStops);
                             } catch (IOException | NotFoundException e) {
                                 // TODO Show Toast
                                 e.printStackTrace();
