@@ -2,12 +2,14 @@ package io.github.wuerzburgtransportguide;
 
 import io.github.wuerzburgtransportguide.api.NetzplanApi;
 import io.github.wuerzburgtransportguide.client.ApiClient;
+import io.github.wuerzburgtransportguide.view.context.IMapContext;
 import io.github.wuerzburgtransportguide.view.context.MapContext;
 import io.github.wuerzburgtransportguide.view.pages.ControllerHelper;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.Pair;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,7 +28,8 @@ public class App extends Application {
                         basePath + "start/start.fxml",
                         basePath + "route/route.fxml",
                         basePath + "map/map.fxml");
-        List<Class<?>> contextClasses = List.of(MapContext.class);
+        List<Pair<Class<?>, Object>> contextClasses =
+                List.of(new Pair<>(IMapContext.class, new MapContext()));
 
         var sceneController = buildSceneController(stage, pages, netzplanService, contextClasses);
         try {
@@ -42,7 +45,7 @@ public class App extends Application {
             Stage stage,
             List<String> pages,
             NetzplanApi netzplanService,
-            List<Class<?>> contextClasses) {
+            List<Pair<Class<?>, Object>> contextClasses) {
         var sceneController = new SceneController(stage, pages, 800, 500);
         var injectorLoader =
                 buildDependencyInjectorLoader(netzplanService, sceneController, contextClasses);
@@ -53,7 +56,7 @@ public class App extends Application {
     @NotNull private static DependencyInjectorLoader buildDependencyInjectorLoader(
             NetzplanApi apiService,
             SceneController sceneController,
-            List<Class<?>> optionalContextClasses) {
+            List<Pair<Class<?>, Object>> optionalContextClasses) {
         Callback<Class<?>, Object> defaultControllerFactory =
                 controllerClass -> {
                     try {
@@ -61,7 +64,8 @@ public class App extends Application {
                         if (controllerClass.getSuperclass().equals(ControllerHelper.class)) {
                             // NOTE: Change the parameters to match the ControllerHelper.class
                             // constructor.
-                            // Also change the args passed to the constructor, so it matches.
+                            // Also change the args passed to the constructor, so it matches and
+                            // update module-info.java
                             controller =
                                     controllerClass
                                             .getConstructor(
@@ -71,16 +75,20 @@ public class App extends Application {
                             controller = controllerClass.getConstructor().newInstance();
                         }
 
-                        for (var optionalContextClass : optionalContextClasses) {
-                            try {
-                                var method =
-                                        controllerClass.getMethod(
-                                                "set" + optionalContextClass.getSimpleName(),
-                                                optionalContextClass);
-                                method.invoke(
-                                        controller,
-                                        optionalContextClass.getConstructor().newInstance());
-                            } catch (Exception ignored) {
+                        for (var contextClass : optionalContextClasses) {
+                            // Check if controller class implements one of the context classes
+                            // through an interface
+                            if (contextClass.getKey().isAssignableFrom(controllerClass)) {
+                                contextClass
+                                        .getKey()
+                                        .getMethod(
+                                                "set"
+                                                        + contextClass
+                                                                .getValue()
+                                                                .getClass()
+                                                                .getSimpleName(),
+                                                contextClass.getValue().getClass())
+                                        .invoke(controller, contextClass.getValue());
                             }
                         }
 

@@ -46,10 +46,6 @@ public class RouteController extends ControllerHelper implements IMapContext {
 
     private MapContext mapContext;
 
-    public RouteController() {
-        super();
-    }
-
     public RouteController(NetzplanApi apiService, SceneController sceneController) {
         super(apiService, sceneController);
     }

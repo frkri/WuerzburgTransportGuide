@@ -35,6 +35,11 @@ module io.github.wuerzburgtransportguide {
     opens io.github.wuerzburgtransportguide.view.pages.start to
             javafx.fxml;
 
+    exports io.github.wuerzburgtransportguide.view.pages.route.availableRoutes;
+
+    opens io.github.wuerzburgtransportguide.view.pages.route.availableRoutes to
+            javafx.fxml;
+
     exports io.github.wuerzburgtransportguide.view.pages;
 
     opens io.github.wuerzburgtransportguide.view.pages to

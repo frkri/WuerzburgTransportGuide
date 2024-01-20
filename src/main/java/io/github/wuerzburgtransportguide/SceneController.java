@@ -66,7 +66,7 @@ public class SceneController {
         Stage popUpStage = new Stage();
         popUpStage.initModality(Modality.APPLICATION_MODAL);
         var loaded = dependencyInjectorLoader.load(path);
-        popUpStage.setScene(new Scene(loaded, defaultSceneWidth, defaultSceneHeight));
-        popUpStage.showAndWait();
+        popUpStage.setScene(new Scene(loaded, defaultSceneWidth / 1.5, defaultSceneHeight / 1.5));
+        popUpStage.show();
     }
 }
