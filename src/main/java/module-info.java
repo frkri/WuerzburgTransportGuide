@@ -10,6 +10,7 @@ module io.github.wuerzburgtransportguide {
     requires com.gluonhq.maps;
     requires java.desktop;
     requires org.apache.commons.text;
+    requires org.openapitools.jackson.nullable;
 
     opens io.github.wuerzburgtransportguide to
             javafx.fxml;
