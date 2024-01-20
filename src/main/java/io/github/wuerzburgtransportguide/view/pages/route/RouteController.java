@@ -71,6 +71,7 @@ public class RouteController extends ControllerHelper implements IMapContext {
                             if (t1 == null) return;
                             isInternalChange = true;
                             start.setText(t1.getName());
+                            mapContext.start = t1;
                             isInternalChange = false;
                         });
         destinationList
@@ -81,6 +82,7 @@ public class RouteController extends ControllerHelper implements IMapContext {
                             if (t1 == null) return;
                             isInternalChange = true;
                             destination.setText(t1.getName());
+                            mapContext.end = t1;
                             isInternalChange = false;
                         });
     }
