@@ -30,11 +30,6 @@ public class ApiClient {
         var okHttpClient =
                 new OkHttpClient.Builder().followRedirects(false).retryOnConnectionFailure(true);
 
-        // Cache
-        var cacheDir = Util.getCacheDir();
-        if (cacheDir != null && cacheDir.toFile().canWrite() && cacheDir.toFile().canRead())
-            okHttpClient.cache(new Cache(cacheDir.toFile(), 10L * 1024L * 1024L));
-
         // CookieStore
         var cookieStore = new FilteredCookieStore(List.of("XSRF-TOKEN", "laravel_token"));
         okHttpClient.cookieJar(cookieStore);
