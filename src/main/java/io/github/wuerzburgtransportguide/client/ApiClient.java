@@ -2,7 +2,6 @@ package io.github.wuerzburgtransportguide.client;
 
 import com.google.gson.GsonBuilder;
 
-import io.github.wuerzburgtransportguide.Util;
 import io.github.wuerzburgtransportguide.client.adapters.*;
 import io.github.wuerzburgtransportguide.client.componenents.FilteredCookieStore;
 import io.github.wuerzburgtransportguide.client.componenents.RequiredHeader;
@@ -11,7 +10,6 @@ import io.github.wuerzburgtransportguide.client.componenents.RequiredXsrfInterce
 import io.github.wuerzburgtransportguide.model.Coordinates;
 import io.github.wuerzburgtransportguide.model.CoordinatesList;
 
-import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 
 import retrofit2.Retrofit;
