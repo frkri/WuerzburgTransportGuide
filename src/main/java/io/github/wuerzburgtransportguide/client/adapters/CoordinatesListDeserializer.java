@@ -25,10 +25,11 @@ public class CoordinatesListDeserializer implements JsonDeserializer<Coordinates
         var coordsListData = new ArrayList<Coordinates>(coords.length);
         for (var coordinates : coords) {
             var coordinatesSplit = coordinates.split(",");
+            // 1 = latitude, 0 = longitude, because reasons I guess, sigh...
             coordsListData.add(
                     new Coordinates(
-                            Double.parseDouble(coordinatesSplit[0]),
-                            Double.parseDouble(coordinatesSplit[1])));
+                            Double.parseDouble(coordinatesSplit[1]),
+                            Double.parseDouble(coordinatesSplit[0])));
         }
 
         return new CoordinatesList(coordsListData);
