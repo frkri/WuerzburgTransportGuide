@@ -10,7 +10,6 @@
 #saveButton {
 	-fx-background-color: #4E5357;
 	-fx-text-fill: white;
-	-fx-alignment: right;
 }
 
 #start {
