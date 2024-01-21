@@ -16,7 +16,6 @@ import javafx.scene.layout.Pane;
 import org.controlsfx.control.Notifications;
 
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 public class MapController extends ControllerHelper implements IMapContext {
 
@@ -42,9 +41,24 @@ public class MapController extends ControllerHelper implements IMapContext {
         mapView.setZoom(13);
 
         try {
-            var firstLeg = Objects.requireNonNull(mapContext.journeys.getLegs().getFirst());
-            mapView.addLayer(new LineLayer(firstLeg.getPath()));
-            mapView.addLayer(new StopsLayer(Objects.requireNonNull(firstLeg.getStopSeq())));
+            var legs = mapContext.journeys.getLegs();
+            for (var i = 0; i < legs.size(); i++) {
+                var leg = legs.get(i);
+
+                var lineLayer = new LineLayer(leg.getPath());
+                mapView.addLayer(lineLayer);
+
+                StopsLayer stopsLayer;
+                if (i == 0) {
+                    stopsLayer = new StopsLayer(leg.getStopSeq(), true, (legs.size() == 1));
+                } else if (i == legs.size() - 1) {
+                    stopsLayer = new StopsLayer(leg.getStopSeq(), false, true);
+                } else {
+                    stopsLayer = new StopsLayer(leg.getStopSeq(), false, false);
+                }
+
+                mapView.addLayer(stopsLayer);
+            }
         } catch (NullPointerException | NoSuchElementException e) {
             notificationBuilder
                     .title("No route selected")
@@ -56,6 +70,7 @@ public class MapController extends ControllerHelper implements IMapContext {
                 throw new RuntimeException(ex);
             }
         }
+
         mapContainer.getChildren().add(mapView);
     }
 
