@@ -18,7 +18,10 @@ public class StartController extends ControllerHelper {
         try {
             sceneController.navigateForward();
         } catch (IndexOutOfBoundsException e) {
-            // TODO Show toast
+            notificationBuilder
+                    .title("Cannot navigate forwards")
+                    .text("Route page not found")
+                    .showError();
         }
     }
 }

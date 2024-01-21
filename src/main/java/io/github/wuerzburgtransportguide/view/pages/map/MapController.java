@@ -41,11 +41,20 @@ public class MapController extends ControllerHelper implements IMapContext {
     }
 
     public void visitOpenStreetMap() {
-        Util.visitSite("https://www.openstreetmap.org/copyright");
+        try {
+
+            Util.visitSite("https://www.openstreetmap.org/copyright");
+        } catch (Exception e) {
+            notificationBuilder.title("Cannot open site").text("Failed to open site").showError();
+        }
     }
 
     public void visitVVM() {
-        Util.visitSite("https://netzplan.vvm-info.de/");
+        try {
+            Util.visitSite("https://netzplan.vvm-info.de/");
+        } catch (Exception e) {
+            notificationBuilder.title("Cannot open site").text("Failed to open site").showError();
+        }
     }
 
     @Override

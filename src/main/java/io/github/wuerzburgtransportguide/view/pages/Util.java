@@ -6,11 +6,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public class Util {
-    public static void visitSite(String url) {
-        try {
-            Desktop.getDesktop().browse(new URI(url));
-        } catch (IOException | URISyntaxException e) {
-            // TODO Show toast
-        }
+    public static void visitSite(String url) throws URISyntaxException, IOException {
+        Desktop.getDesktop().browse(new URI(url));
     }
 }

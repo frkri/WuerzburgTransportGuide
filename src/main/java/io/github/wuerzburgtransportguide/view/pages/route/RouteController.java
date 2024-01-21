@@ -122,7 +122,8 @@ public class RouteController extends ControllerHelper implements IMapContext {
                                 var response = request.execute();
 
                                 if (response.code() == 500)
-                                    throw new NotFoundException("Found no stops matching query");
+                                    throw new NotFoundException(
+                                            "Could not find any stops matching query");
                                 if (!response.isSuccessful() || response.body() == null)
                                     throw new IOException("An error has occurred while querying");
 
@@ -133,9 +134,16 @@ public class RouteController extends ControllerHelper implements IMapContext {
 
                                 Platform.runLater(() -> listDataView.setAll(filteredStops));
                                 stopPointCache.put(query, filteredStops);
-                            } catch (IOException | NotFoundException e) {
-                                // TODO Show Toast
-                                e.printStackTrace();
+                            } catch (IOException e) {
+                                notificationBuilder
+                                        .title("Network Error")
+                                        .text("Could not fetch stops from server")
+                                        .showError();
+                            } catch (NotFoundException e) {
+                                notificationBuilder
+                                        .title("No stops found")
+                                        .text(e.getMessage())
+                                        .showWarning();
                             }
                         },
                         QUERY_DELAY,

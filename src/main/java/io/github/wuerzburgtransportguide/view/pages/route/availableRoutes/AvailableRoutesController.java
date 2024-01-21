@@ -51,8 +51,13 @@ public class AvailableRoutesController extends ControllerHelper implements IMapC
                     netzplanService.getJourneys(journeyRequest, Locale.getDefault()).execute();
             journeys = response.body();
 
-            if (!response.isSuccessful() || journeys == null || journeys.isEmpty())
-                return; // TODO toast
+            if (!response.isSuccessful() || journeys == null || journeys.isEmpty()) {
+                notificationBuilder
+                        .title("No journeys found")
+                        .text("Could not find any journeys. Check your query.")
+                        .showError();
+                return;
+            }
 
             // Note: Needed due to javafx only creating the scene after initialize
             Platform.runLater(
@@ -99,8 +104,10 @@ public class AvailableRoutesController extends ControllerHelper implements IMapC
                         }
                     });
         } catch (IOException e) {
-            // TODO toast
-            e.printStackTrace();
+            notificationBuilder
+                    .title("Could not fetch journeys")
+                    .text("An network error has occurred while loading journeys")
+                    .showError();
         }
     }
 
