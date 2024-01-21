@@ -14,11 +14,13 @@ import java.util.List;
 public class StopPointCache implements Serializable {
 
     private final int threshold;
+    private final Path path;
     private final LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
     private HashMap<String, List<Poi>> stopPointCache = new HashMap<>();
 
-    public StopPointCache(int threshold) {
+    public StopPointCache(int threshold, Path path) {
         this.threshold = threshold;
+        this.path = path;
     }
 
     @Nullable public List<Poi> get(String query) {
@@ -45,17 +47,26 @@ public class StopPointCache implements Serializable {
         stopPointCache.put(query.toLowerCase(), pois);
     }
 
-    public void loadFromStorage(Path path) throws IOException, ClassNotFoundException {
+    public void loadFromStorage() throws IOException, ClassNotFoundException {
+        if (!Files.exists(path)) throw new FileNotFoundException();
         var reader = new ObjectInputStream(new FileInputStream(path.toFile()));
         stopPointCache = (HashMap<String, List<Poi>>) reader.readObject();
     }
 
-    public void saveToStorage(Path path) throws IOException {
-        try {
+    public void saveToStorage() throws IOException {
+        if (Files.exists(path)) {
+            Files.delete(path);
             Files.createFile(path);
-        } catch (IOException ignored) {
+        } else {
+            Files.createFile(path);
         }
+
         var writer = new ObjectOutputStream(new FileOutputStream(path.toFile()));
         writer.writeObject(stopPointCache);
+    }
+
+    public void clear() throws IOException {
+        stopPointCache.clear();
+        Files.deleteIfExists(path);
     }
 }

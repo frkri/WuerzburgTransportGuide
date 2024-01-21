@@ -59,14 +59,24 @@ public class RouteController extends ControllerHelper implements IMapContext {
     }
 
     public void initialize() {
-        stopPointCache = new StopPointCache(CACHE_MATCH_THRESHOLD);
-        try {
-            stopPointCache.loadFromStorage(
-                    Objects.requireNonNull(
-                            Objects.requireNonNull(Util.getCacheDir())
-                                    .resolve("stopPointCache.ser")));
-        } catch (IOException | ClassNotFoundException ignored) {
 
+        try {
+            stopPointCache =
+                    new StopPointCache(
+                            CACHE_MATCH_THRESHOLD,
+                            Objects.requireNonNull(
+                                    Objects.requireNonNull(Util.getCacheDir())
+                                            .resolve("stopPointCache.ser")));
+        } catch (Exception e) {
+            notificationBuilder
+                    .title("Failed to create cache")
+                    .text("Could not create cache, search performance may be affected")
+                    .showError();
+        }
+
+        try {
+            stopPointCache.loadFromStorage();
+        } catch (IOException | ClassNotFoundException ignored) {
         }
 
         destinationList.setCellFactory(RouteController::createCellCallback);
@@ -123,7 +133,7 @@ public class RouteController extends ControllerHelper implements IMapContext {
         var stopPoints = stopPointCache.get(query);
         if (stopPoints != null) Platform.runLater(() -> listDataView.setAll(stopPoints));
 
-        if (scheduledFuture != null && !scheduledFuture.isDone()) scheduledFuture.cancel(false);
+        if (scheduledFuture != null && !scheduledFuture.isDone()) scheduledFuture.cancel(true);
         if (query.length() <= MIN_QUERY_LENGTH) return;
         scheduledFuture =
                 executorService.schedule(
@@ -178,15 +188,26 @@ public class RouteController extends ControllerHelper implements IMapContext {
         }
 
         try {
-            stopPointCache.saveToStorage(
-                    Objects.requireNonNull(
-                            Objects.requireNonNull(Util.getCacheDir())
-                                    .resolve("stopPointCache.ser")));
+            stopPointCache.saveToStorage();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Notifications.create()
+                    .title("Failed to save cache")
+                    .text("Could not save cache")
+                    .showError();
         }
 
         sceneController.showModal("pages/route/availableRoutes/availableRoutes.fxml");
+    }
+
+    public void clearCache() {
+        try {
+            stopPointCache.clear();
+        } catch (IOException e) {
+            notificationBuilder
+                    .title("Failed to clear cache")
+                    .text("Could not clear cache")
+                    .showError();
+        }
     }
 
     @Override

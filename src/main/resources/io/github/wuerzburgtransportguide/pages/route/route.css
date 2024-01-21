@@ -13,10 +13,18 @@
 	-fx-background-color: black;
 }
 
-#searchButton {
+#button {
 	-fx-control-inner-background: #4E5357;
 	-fx-background-color: #4E5357;
 	-fx-background-radius: 10;
 	-fx-text-fill: white;
 	-fx-font-size: 25px;
+}
+
+#buttonSecondary {
+	-fx-control-inner-background: #4E5357;
+	-fx-background-color: #4E5357;
+	-fx-background-radius: 5;
+	-fx-text-fill: white;
+	-fx-font-size: 15px;
 }
