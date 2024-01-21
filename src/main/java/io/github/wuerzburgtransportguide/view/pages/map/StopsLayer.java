@@ -41,7 +41,7 @@ public class StopsLayer extends MapLayer {
             var node = pointPair.getValue();
 
             var relativeMapPoint = getMapPoint(point.getLatitude(), point.getLongitude());
-            node.setTranslateX(relativeMapPoint.getX());
+            node.setTranslateX(relativeMapPoint.getX() - 10);
             node.setTranslateY(relativeMapPoint.getY() - 10);
         }
     }
