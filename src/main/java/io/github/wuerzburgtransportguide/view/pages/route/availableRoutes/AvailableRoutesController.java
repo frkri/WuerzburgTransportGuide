@@ -9,10 +9,8 @@ import io.github.wuerzburgtransportguide.view.context.MapContext;
 import io.github.wuerzburgtransportguide.view.pages.ControllerHelper;
 
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
@@ -54,8 +52,7 @@ public class AvailableRoutesController extends ControllerHelper implements IMapC
             // Note: Needed due to javafx only creating the scene after initialize
             Platform.runLater(
                     () -> {
-                        var dateFormatter =
-                                DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
+                        var dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
 
                         for (var i = 0; i != Math.min(4, journeys.size()); i++) {
                             var journey = journeys.get(i);
