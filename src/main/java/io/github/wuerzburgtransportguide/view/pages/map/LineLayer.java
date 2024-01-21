@@ -20,7 +20,7 @@ public class LineLayer extends MapLayer {
         this.linePoints = coordinatesList;
 
         polyline.setStrokeLineCap(StrokeLineCap.ROUND);
-        polyline.setStroke(new Color(0.8, 0.0, 0.0, 0.5));
+        polyline.setStroke(new Color(0.3, 0.5, 1, 0.5));
         polyline.setStrokeWidth(8.0);
 
         this.getChildren().add(polyline);
