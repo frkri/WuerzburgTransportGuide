@@ -1,5 +1,6 @@
 package io.github.wuerzburgtransportguide;
 
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -10,6 +11,7 @@ public class SceneController {
 
     private DependencyInjectorLoader dependencyInjectorLoader;
     private final Stage primaryStage;
+    private Stage primaryPopUpStage;
     private final List<String> pagesPaths;
 
     private final double defaultSceneWidth;
@@ -63,10 +65,20 @@ public class SceneController {
     }
 
     public void showPopUp(String path) {
-        Stage popUpStage = new Stage();
-        popUpStage.initModality(Modality.APPLICATION_MODAL);
         var loaded = dependencyInjectorLoader.load(path);
-        popUpStage.setScene(new Scene(loaded, defaultSceneWidth / 1.5, defaultSceneHeight / 1.5));
-        popUpStage.show();
+        var scenePopup = new Scene(loaded, defaultSceneWidth, defaultSceneHeight);
+
+        primaryPopUpStage = new Stage();
+        primaryPopUpStage.initModality(Modality.APPLICATION_MODAL);
+        primaryPopUpStage.setScene(scenePopup);
+        primaryPopUpStage.show();
+    }
+
+    public Stage getPrimaryPopUpStage() {
+        return this.primaryPopUpStage;
+    }
+
+    public Parent loadNode(String path) {
+        return dependencyInjectorLoader.load(path);
     }
 }
