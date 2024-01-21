@@ -96,7 +96,7 @@ public class AvailableRoutesController extends ControllerHelper implements IMapC
                             journeyBox.setOnMouseClicked(
                                     mouseEvent -> {
                                         mapContext.journeys = journey;
-                                        sceneController.getPrimaryPopUpStage().close();
+                                        sceneController.getPrimaryModalStage().close();
                                         sceneController.navigateForward();
                                     });
 

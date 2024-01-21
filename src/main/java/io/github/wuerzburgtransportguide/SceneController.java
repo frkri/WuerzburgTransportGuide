@@ -11,7 +11,7 @@ public class SceneController {
 
     private DependencyInjectorLoader dependencyInjectorLoader;
     private final Stage primaryStage;
-    private Stage primaryPopUpStage;
+    private Stage primaryModalStage;
     private final List<String> pagesPaths;
     private final double defaultSceneWidth;
     private final double defaultSceneHeight;
@@ -61,18 +61,22 @@ public class SceneController {
         currentIndex = index;
     }
 
-    public void showPopUp(String path) {
-        var loaded = dependencyInjectorLoader.load(path);
-        var scenePopup = new Scene(loaded, defaultSceneWidth, defaultSceneHeight);
-
-        primaryPopUpStage = new Stage();
-        primaryPopUpStage.initModality(Modality.APPLICATION_MODAL);
-        primaryPopUpStage.setScene(scenePopup);
-        primaryPopUpStage.show();
+    public void showModal(String path) {
+        showModal(path, defaultSceneWidth, defaultSceneHeight);
     }
 
-    public Stage getPrimaryPopUpStage() {
-        return this.primaryPopUpStage;
+    public void showModal(String path, double width, double height) {
+        var loaded = dependencyInjectorLoader.load(path);
+        var scenePopup = new Scene(loaded, width, height);
+
+        primaryModalStage = new Stage();
+        primaryModalStage.initModality(Modality.APPLICATION_MODAL);
+        primaryModalStage.setScene(scenePopup);
+        primaryModalStage.show();
+    }
+
+    public Stage getPrimaryModalStage() {
+        return this.primaryModalStage;
     }
 
     public Parent loadNode(String path) {

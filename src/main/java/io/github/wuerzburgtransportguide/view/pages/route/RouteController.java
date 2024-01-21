@@ -186,7 +186,7 @@ public class RouteController extends ControllerHelper implements IMapContext {
             throw new RuntimeException(e);
         }
 
-        sceneController.showPopUp("pages/route/availableRoutes/availableRoutes.fxml");
+        sceneController.showModal("pages/route/availableRoutes/availableRoutes.fxml");
     }
 
     @Override
