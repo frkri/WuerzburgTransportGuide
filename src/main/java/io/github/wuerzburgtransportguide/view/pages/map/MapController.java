@@ -36,7 +36,8 @@ public class MapController extends ControllerHelper implements IMapContext {
         mapView.setCenter(new MapPoint(49.783333, 9.933333));
         mapView.setZoom(13);
 
-        mapView.addLayer(new LineLayer());
+        mapView.addLayer(new LineLayer(mapContext.journeys.getLegs().getFirst().getPath()));
+        mapView.addLayer(new StopsLayer(mapContext.journeys.getLegs().getFirst().getStopSeq()));
         mapContainer.getChildren().add(mapView);
     }
 
