@@ -2,6 +2,7 @@ package io.github.wuerzburgtransportguide.client;
 
 import com.google.gson.GsonBuilder;
 
+import io.github.wuerzburgtransportguide.Util;
 import io.github.wuerzburgtransportguide.client.adapters.*;
 import io.github.wuerzburgtransportguide.client.componenents.FilteredCookieStore;
 import io.github.wuerzburgtransportguide.client.componenents.RequiredHeader;

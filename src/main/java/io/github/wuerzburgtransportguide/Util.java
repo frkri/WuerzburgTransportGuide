@@ -1,7 +1,11 @@
-package io.github.wuerzburgtransportguide.client;
+package io.github.wuerzburgtransportguide;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 
 public final class Util {
@@ -21,5 +25,9 @@ public final class Util {
         }
 
         return null;
+    }
+
+    public static void visitSite(String url) throws URISyntaxException, IOException {
+        Desktop.getDesktop().browse(new URI(url));
     }
 }
