@@ -9,8 +9,10 @@ import io.github.wuerzburgtransportguide.view.pages.ControllerHelper;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.Duration;
 import javafx.util.Pair;
 
+import org.controlsfx.control.Notifications;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -21,6 +23,8 @@ public class App extends Application {
     public void start(Stage stage) {
         var apiBuilder = new ApiClient("https://netzplan.vvm-info.de/api/");
         var netzplanService = apiBuilder.createClientService(NetzplanApi.class);
+        var notificationBuilder =
+                Notifications.create().hideAfter(Duration.seconds(3)).graphic(null);
 
         var basePath = "pages/";
         var pages =
@@ -31,7 +35,9 @@ public class App extends Application {
         List<Pair<Class<?>, Object>> contextClasses =
                 List.of(new Pair<>(IMapContext.class, new MapContext()));
 
-        var sceneController = buildSceneController(stage, pages, netzplanService, contextClasses);
+        var sceneController =
+                buildSceneController(
+                        stage, pages, netzplanService, notificationBuilder, contextClasses);
         try {
             sceneController.navigateTo(0);
         } catch (IndexOutOfBoundsException e) {
@@ -45,10 +51,12 @@ public class App extends Application {
             Stage stage,
             List<String> pages,
             NetzplanApi netzplanService,
+            Notifications notificationBuilder,
             List<Pair<Class<?>, Object>> contextClasses) {
         var sceneController = new SceneController(stage, pages, 800, 500);
         var injectorLoader =
-                buildDependencyInjectorLoader(netzplanService, sceneController, contextClasses);
+                buildDependencyInjectorLoader(
+                        netzplanService, sceneController, notificationBuilder, contextClasses);
         sceneController.setDependencyInjectorLoader(injectorLoader);
         return sceneController;
     }
@@ -56,6 +64,7 @@ public class App extends Application {
     @NotNull private static DependencyInjectorLoader buildDependencyInjectorLoader(
             NetzplanApi apiService,
             SceneController sceneController,
+            Notifications notificationBuilder,
             List<Pair<Class<?>, Object>> optionalContextClasses) {
         Callback<Class<?>, Object> defaultControllerFactory =
                 controllerClass -> {
@@ -69,8 +78,13 @@ public class App extends Application {
                             controller =
                                     controllerClass
                                             .getConstructor(
-                                                    NetzplanApi.class, SceneController.class)
-                                            .newInstance(apiService, sceneController);
+                                                    NetzplanApi.class,
+                                                    SceneController.class,
+                                                    Notifications.class)
+                                            .newInstance(
+                                                    apiService,
+                                                    sceneController,
+                                                    notificationBuilder);
                         } else {
                             controller = controllerClass.getConstructor().newInstance();
                         }

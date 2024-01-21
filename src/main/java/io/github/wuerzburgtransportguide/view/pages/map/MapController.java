@@ -13,6 +13,8 @@ import io.github.wuerzburgtransportguide.view.pages.Util;
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
 
+import org.controlsfx.control.Notifications;
+
 public class MapController extends ControllerHelper implements IMapContext {
 
     @FXML private Pane mapContainer;
@@ -22,8 +24,11 @@ public class MapController extends ControllerHelper implements IMapContext {
         super();
     }
 
-    public MapController(NetzplanApi apiService, SceneController sceneController) {
-        super(apiService, sceneController);
+    public MapController(
+            NetzplanApi apiService,
+            SceneController sceneController,
+            Notifications notificationBuilder) {
+        super(apiService, sceneController, notificationBuilder);
     }
 
     public void initialize() {

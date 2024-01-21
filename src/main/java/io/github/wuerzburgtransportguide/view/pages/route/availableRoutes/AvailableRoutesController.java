@@ -14,6 +14,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
+import org.controlsfx.control.Notifications;
+
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -26,8 +28,11 @@ public class AvailableRoutesController extends ControllerHelper implements IMapC
     @FXML private VBox journeyBoxContainer;
     private MapContext mapContext;
 
-    public AvailableRoutesController(NetzplanApi apiService, SceneController sceneController) {
-        super(apiService, sceneController);
+    public AvailableRoutesController(
+            NetzplanApi apiService,
+            SceneController sceneController,
+            Notifications notificationBuilder) {
+        super(apiService, sceneController, notificationBuilder);
     }
 
     public void initialize() {

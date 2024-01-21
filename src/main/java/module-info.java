@@ -1,6 +1,7 @@
 module io.github.wuerzburgtransportguide {
     requires javafx.controls;
     requires javafx.fxml;
+    requires org.controlsfx.controls;
     requires retrofit2;
     requires okhttp3;
     requires retrofit2.converter.gson;
@@ -17,9 +18,9 @@ module io.github.wuerzburgtransportguide {
     opens io.github.wuerzburgtransportguide.model to
             com.google.gson;
 
+    exports io.github.wuerzburgtransportguide;
     exports io.github.wuerzburgtransportguide.api;
     exports io.github.wuerzburgtransportguide.model;
-    exports io.github.wuerzburgtransportguide;
     exports io.github.wuerzburgtransportguide.view.pages.map;
 
     opens io.github.wuerzburgtransportguide.view.pages.map to

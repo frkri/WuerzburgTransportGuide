@@ -17,6 +17,8 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
+import org.controlsfx.control.Notifications;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -47,8 +49,11 @@ public class RouteController extends ControllerHelper implements IMapContext {
 
     private MapContext mapContext;
 
-    public RouteController(NetzplanApi apiService, SceneController sceneController) {
-        super(apiService, sceneController);
+    public RouteController(
+            NetzplanApi apiService,
+            SceneController sceneController,
+            Notifications notificationBuilder) {
+        super(apiService, sceneController, notificationBuilder);
     }
 
     public void initialize() {
