@@ -3,15 +3,12 @@ package io.github.wuerzburgtransportguide;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public final class Util {
     public static @Nullable Path getCacheDir() {
@@ -46,12 +43,7 @@ public final class Util {
         Desktop.getDesktop().browse(new URI(url));
     }
 
-    public static String getResource(String path) {
-        Util.class.getResource(path);
-        var reader =
-                new BufferedReader(
-                        new InputStreamReader(
-                                Objects.requireNonNull(Util.class.getResourceAsStream(path))));
-        return reader.lines().collect(Collectors.joining());
+    public static URL getResource(String path) {
+        return Util.class.getResource(path);
     }
 }
