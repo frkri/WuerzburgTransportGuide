@@ -15,6 +15,9 @@ import javafx.scene.layout.Pane;
 
 import org.controlsfx.control.Notifications;
 
+import java.util.NoSuchElementException;
+import java.util.Objects;
+
 public class MapController extends ControllerHelper implements IMapContext {
 
     @FXML private Pane mapContainer;
@@ -33,11 +36,26 @@ public class MapController extends ControllerHelper implements IMapContext {
 
     public void initialize() {
         var mapView = new MapView();
-        mapView.setCenter(new MapPoint(49.783333, 9.933333));
+        var wuCenter = new MapPoint(49.783333, 9.933333);
+
+        mapView.setCenter(wuCenter);
         mapView.setZoom(13);
 
-        mapView.addLayer(new LineLayer(mapContext.journeys.getLegs().getFirst().getPath()));
-        mapView.addLayer(new StopsLayer(mapContext.journeys.getLegs().getFirst().getStopSeq()));
+        try {
+            var firstLeg = Objects.requireNonNull(mapContext.journeys.getLegs().getFirst());
+            mapView.addLayer(new LineLayer(firstLeg.getPath()));
+            mapView.addLayer(new StopsLayer(Objects.requireNonNull(firstLeg.getStopSeq())));
+        } catch (NullPointerException | NoSuchElementException e) {
+            notificationBuilder
+                    .title("No route selected")
+                    .text("Please select a route")
+                    .showError();
+            try {
+                sceneController.navigateBack();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        }
         mapContainer.getChildren().add(mapView);
     }
 
