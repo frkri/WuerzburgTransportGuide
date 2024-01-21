@@ -208,6 +208,11 @@ public class RouteController extends ControllerHelper implements IMapContext {
                     .text("Could not clear cache")
                     .showError();
         }
+        notificationBuilder
+                .graphic(null)
+                .title("Cache cleared")
+                .text("Cache cleared successfully")
+                .show();
     }
 
     @Override
