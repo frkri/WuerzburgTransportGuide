@@ -7,6 +7,7 @@ import io.github.wuerzburgtransportguide.view.context.MapContext;
 import io.github.wuerzburgtransportguide.view.pages.ControllerHelper;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -21,6 +22,12 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
+        stage.setOnCloseRequest(
+                v -> {
+                    Platform.exit();
+                    System.exit(0);
+                });
+
         var apiBuilder = new ApiClient("https://netzplan.vvm-info.de/api/");
         var netzplanService = apiBuilder.createClientService(NetzplanApi.class);
         var notificationBuilder =
