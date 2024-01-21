@@ -13,7 +13,6 @@ public class SceneController {
     private final Stage primaryStage;
     private Stage primaryPopUpStage;
     private final List<String> pagesPaths;
-
     private final double defaultSceneWidth;
     private final double defaultSceneHeight;
     private int currentIndex = 0;
@@ -38,8 +37,7 @@ public class SceneController {
             throw new IndexOutOfBoundsException(
                     "Unable to navigate backwards, would be outside of bounds");
 
-        var loaded = dependencyInjectorLoader.load(pagesPaths.get(--currentIndex));
-        primaryStage.setScene(new Scene(loaded, defaultSceneWidth, defaultSceneHeight));
+        navigateTo(--currentIndex);
     }
 
     public void navigateForward() throws IndexOutOfBoundsException {
@@ -47,8 +45,7 @@ public class SceneController {
             throw new IndexOutOfBoundsException(
                     "Unable to navigate forwards, would be outside of bounds");
 
-        var loaded = dependencyInjectorLoader.load(pagesPaths.get(++currentIndex));
-        primaryStage.setScene(new Scene(loaded, defaultSceneWidth, defaultSceneHeight));
+        navigateTo(++currentIndex);
     }
 
     public void navigateTo(int index) throws IndexOutOfBoundsException {
