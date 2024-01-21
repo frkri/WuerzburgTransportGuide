@@ -5,7 +5,6 @@ import javafx.scene.Parent;
 import javafx.util.Callback;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 public class DependencyInjectorLoader {
     private final Callback<Class<?>, Object> controllerFactoryCallback;
@@ -21,7 +20,7 @@ public class DependencyInjectorLoader {
 
             return loader.load();
         } catch (IOException e) {
-            throw new RuntimeException(e.getMessage() + " " + Arrays.toString(e.getStackTrace()));
+            throw new RuntimeException(e);
         }
     }
 }
