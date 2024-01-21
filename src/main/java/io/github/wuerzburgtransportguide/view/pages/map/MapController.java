@@ -54,7 +54,7 @@ public class MapController extends ControllerHelper implements IMapContext {
             for (var i = 0; i < legs.size(); i++) {
                 var leg = legs.get(i);
 
-                var lineLayer = new LineLayer(leg.getPath());
+                var lineLayer = new LineLayer(leg.getPath(), i % 2 == 0);
                 mapView.addLayer(lineLayer);
 
                 StopsLayer stopsLayer;
