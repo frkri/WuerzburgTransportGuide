@@ -59,11 +59,13 @@ public class MapController extends ControllerHelper implements IMapContext {
 
                 StopsLayer stopsLayer;
                 if (i == 0) {
-                    stopsLayer = new StopsLayer(leg.getStopSeq(), true, (legs.size() == 1));
+                    stopsLayer =
+                            new StopsLayer(
+                                    netzplanService, leg.getStopSeq(), true, (legs.size() == 1));
                 } else if (i == legs.size() - 1) {
-                    stopsLayer = new StopsLayer(leg.getStopSeq(), false, true);
+                    stopsLayer = new StopsLayer(netzplanService, leg.getStopSeq(), false, true);
                 } else {
-                    stopsLayer = new StopsLayer(leg.getStopSeq(), false, false);
+                    stopsLayer = new StopsLayer(netzplanService, leg.getStopSeq(), false, false);
                 }
 
                 mapView.addLayer(stopsLayer);

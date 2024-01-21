@@ -4,12 +4,20 @@ import com.gluonhq.maps.MapLayer;
 import com.gluonhq.maps.MapPoint;
 
 import io.github.wuerzburgtransportguide.Util;
+import io.github.wuerzburgtransportguide.api.NetzplanApi;
 import io.github.wuerzburgtransportguide.model.GetJourneys200ResponseInnerLegsInnerStopSeqInner;
 
+import javafx.geometry.Insets;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 
+import org.controlsfx.control.PopOver;
+
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +28,7 @@ public class StopsLayer extends MapLayer {
     private final ArrayList<Pair<MapPoint, ImageView>> stopPoints = new ArrayList<>();
 
     public StopsLayer(
+            NetzplanApi netzplanService,
             List<GetJourneys200ResponseInnerLegsInnerStopSeqInner> stopSeq,
             boolean isOrigin,
             boolean isDestination) {
@@ -42,6 +51,14 @@ public class StopsLayer extends MapLayer {
                 else if (i == stopSeq.size() - 1) stopIconView = new ImageView(stopIconPinTransfer);
                 else if (i == 0) continue;
                 else stopIconView = new ImageView(stopIconPinNormal);
+
+                var popover = createPopOver(point, i, stopSeq.size(), stopIconView);
+                stopIconView.setOnMouseClicked(
+                        event -> {
+                            popover.show(stopIconView);
+                            // Show loader while loading stop info
+
+                        });
 
                 var coordinates = point.getRef().getCoords();
                 add(
@@ -71,5 +88,61 @@ public class StopsLayer extends MapLayer {
 
         this.getChildren().add(node);
         this.markDirty();
+    }
+
+    private PopOver createPopOver(
+            GetJourneys200ResponseInnerLegsInnerStopSeqInner stop,
+            int stopIndex,
+            int stopCount,
+            ImageView stopIconView) {
+        var localTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        var popOverContainer = new VBox();
+        popOverContainer.setSpacing(5);
+        popOverContainer.setPadding(new Insets(10));
+
+        var header = new HBox();
+        header.getChildren().add(stopIconView);
+
+        var titleLabel = new Label(stop.getName());
+        titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 15;");
+        header.getChildren().add(titleLabel);
+        popOverContainer.getChildren().add(header);
+
+        var placeLabel = new Label("Place: " + stop.getPlace());
+        popOverContainer.getChildren().add(placeLabel);
+
+        if (stop.getRef().getArrDateTime() != null) {
+            var arrivalLabel =
+                    new Label(
+                            "Arrival: "
+                                    + stop.getRef().getArrDateTime().format(localTimeFormatter));
+            popOverContainer.getChildren().add(arrivalLabel);
+        }
+
+        if (stop.getRef().getDepDateTime() != null) {
+            var departureLabel =
+                    new Label(
+                            "Departure: "
+                                    + stop.getRef().getDepDateTime().format(localTimeFormatter));
+            popOverContainer.getChildren().add(departureLabel);
+        }
+
+        var currentDelayLabel = new Label("Current delay: " + stop.getRef().getArrDelay());
+        popOverContainer.getChildren().add(currentDelayLabel);
+
+        var coordsLabel =
+                new Label(
+                        "Coordinates: "
+                                + stop.getRef().getCoords().getLongitude()
+                                + ", "
+                                + stop.getRef().getCoords().getLatitude());
+        popOverContainer.getChildren().add(coordsLabel);
+
+        var popover = new PopOver(popOverContainer);
+        popover.setArrowLocation(PopOver.ArrowLocation.TOP_CENTER);
+        popover.setTitle("Stop " + (stopIndex + 1) + " of " + stopCount);
+        popover.setAutoHide(true);
+
+        return popover;
     }
 }
