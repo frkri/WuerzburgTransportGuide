@@ -9,7 +9,6 @@ import io.github.wuerzburgtransportguide.api.NetzplanApi;
 import io.github.wuerzburgtransportguide.view.context.IMapContext;
 import io.github.wuerzburgtransportguide.view.context.MapContext;
 import io.github.wuerzburgtransportguide.view.pages.ControllerHelper;
-import io.github.wuerzburgtransportguide.view.pages.Util;
 
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;

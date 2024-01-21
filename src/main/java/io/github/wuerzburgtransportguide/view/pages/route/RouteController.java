@@ -1,9 +1,9 @@
 package io.github.wuerzburgtransportguide.view.pages.route;
 
 import io.github.wuerzburgtransportguide.SceneController;
+import io.github.wuerzburgtransportguide.Util;
 import io.github.wuerzburgtransportguide.api.NetzplanApi;
 import io.github.wuerzburgtransportguide.cache.StopPointCache;
-import io.github.wuerzburgtransportguide.Util;
 import io.github.wuerzburgtransportguide.model.Poi;
 import io.github.wuerzburgtransportguide.model.PoiType;
 import io.github.wuerzburgtransportguide.view.context.IMapContext;
@@ -23,6 +23,7 @@ import org.controlsfx.control.Notifications;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.*;
 
 public class RouteController extends ControllerHelper implements IMapContext {
@@ -40,7 +41,7 @@ public class RouteController extends ControllerHelper implements IMapContext {
     private final ScheduledExecutorService executorService =
             Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> scheduledFuture;
-    private final StopPointCache stopPointCache = new StopPointCache(CACHE_MATCH_THRESHOLD);
+    private StopPointCache stopPointCache;
     private Boolean isInternalChange = false;
 
     @FXML private TextField start;
@@ -58,6 +59,15 @@ public class RouteController extends ControllerHelper implements IMapContext {
     }
 
     public void initialize() {
+        stopPointCache = new StopPointCache(CACHE_MATCH_THRESHOLD);
+        try {
+            stopPointCache.loadFromStorage(
+                    Objects.requireNonNull(
+                            Objects.requireNonNull(Util.getCacheDir())
+                                    .resolve("stopPointCache.ser")));
+        } catch (IOException | ClassNotFoundException ignored) {
+
+        }
 
         destinationList.setCellFactory(RouteController::createCellCallback);
         startList.setCellFactory(RouteController::createCellCallback);
@@ -152,7 +162,6 @@ public class RouteController extends ControllerHelper implements IMapContext {
     }
 
     public void showAvailableRoutes() {
-
         if (mapContext.start == null || mapContext.destination == null) {
             notificationBuilder
                     .title("Error in route query")
@@ -166,6 +175,15 @@ public class RouteController extends ControllerHelper implements IMapContext {
                     .text("Start and Destination can not be the same.")
                     .showWarning();
             return;
+        }
+
+        try {
+            stopPointCache.saveToStorage(
+                    Objects.requireNonNull(
+                            Objects.requireNonNull(Util.getCacheDir())
+                                    .resolve("stopPointCache.ser")));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         sceneController.showPopUp("pages/route/availableRoutes/availableRoutes.fxml");

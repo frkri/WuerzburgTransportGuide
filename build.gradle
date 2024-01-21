@@ -69,7 +69,7 @@ openApiGenerate {
 	apiPackage.set("io.github.wuerzburgtransportguide.api")
 	modelPackage.set("io.github.wuerzburgtransportguide.model")
 	ignoreFileOverride.set("$rootDir/specs/.openapi-generator-ignore")
-	configOptions.set([dateLibrary: "java8", useJakartaEe: "true"])
+	configOptions.set([dateLibrary: "java8", useJakartaEe: "true", "serializableModel": "true"])
 
 	// Models can be found under io.github.wuerzburgtransportguide.model
 	// GSON Deserializers can be found under io.github.wuerzburgtransportguide.client.adapters
