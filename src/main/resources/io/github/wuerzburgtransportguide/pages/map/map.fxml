@@ -22,6 +22,7 @@
 				</HBox>
 			</children>
 		</Pane>
+
 	</children>
 	<stylesheets>
 		<URL value="@../../styles/global.css" />

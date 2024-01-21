@@ -5,6 +5,6 @@ import io.github.wuerzburgtransportguide.model.Poi;
 
 public class MapContext {
     public Poi start;
-    public Poi end;
+    public Poi destination;
     public GetJourneys200ResponseInner journeys;
 }

@@ -43,7 +43,7 @@ public class AvailableRoutesController extends ControllerHelper implements IMapC
             journeyRequest.setDate(OffsetDateTime.now());
 
             journeyRequest.setOrigin(mapContext.start);
-            journeyRequest.setDestination(mapContext.end);
+            journeyRequest.setDestination(mapContext.destination);
 
             journeyRequest.setOptions(null);
             journeyRequest.setDeparture(1);

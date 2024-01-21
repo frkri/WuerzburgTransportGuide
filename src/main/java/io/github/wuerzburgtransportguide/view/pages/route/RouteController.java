@@ -87,7 +87,7 @@ public class RouteController extends ControllerHelper implements IMapContext {
                             if (t1 == null) return;
                             isInternalChange = true;
                             destination.setText(t1.getName());
-                            mapContext.end = t1;
+                            mapContext.destination = t1;
                             isInternalChange = false;
                         });
     }
@@ -143,6 +143,22 @@ public class RouteController extends ControllerHelper implements IMapContext {
     }
 
     public void showAvailableRoutes() {
+
+        if (mapContext.start == null || mapContext.destination == null) {
+            notificationBuilder
+                    .title("Error in route query")
+                    .text("No Start or Destination Selected.")
+                    .showWarning();
+            return;
+        }
+        if (mapContext.start.equals(mapContext.destination)) {
+            notificationBuilder
+                    .title("Error in route query")
+                    .text("Start and Destination can not be the same.")
+                    .showWarning();
+            return;
+        }
+
         sceneController.showPopUp("pages/route/availableRoutes/availableRoutes.fxml");
     }
 

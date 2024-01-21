@@ -24,7 +24,7 @@ public class App extends Application {
         var apiBuilder = new ApiClient("https://netzplan.vvm-info.de/api/");
         var netzplanService = apiBuilder.createClientService(NetzplanApi.class);
         var notificationBuilder =
-                Notifications.create().hideAfter(Duration.seconds(3)).graphic(null);
+                Notifications.create().hideAfter(Duration.seconds(3)).graphic(null).darkStyle();
 
         var basePath = "pages/";
         var pages =
