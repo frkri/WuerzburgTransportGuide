@@ -11,6 +11,7 @@ import io.github.wuerzburgtransportguide.view.context.MapContext;
 import io.github.wuerzburgtransportguide.view.pages.ControllerHelper;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 
 import org.controlsfx.control.Notifications;
@@ -21,6 +22,9 @@ import java.util.Objects;
 public class MapController extends ControllerHelper implements IMapContext {
 
     @FXML private Pane mapContainer;
+    @FXML private Label start;
+    @FXML private Label destination;
+
     private MapContext mapContext;
 
     public MapController() {
@@ -35,6 +39,8 @@ public class MapController extends ControllerHelper implements IMapContext {
     }
 
     public void initialize() {
+        start.setText(mapContext.start.getName());
+        destination.setText(mapContext.destination.getName());
         var mapView = new MapView();
         var wuCenter = new MapPoint(49.783333, 9.933333);
 

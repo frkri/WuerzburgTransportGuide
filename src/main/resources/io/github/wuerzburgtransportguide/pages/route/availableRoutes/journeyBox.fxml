@@ -31,19 +31,19 @@
 		</HBox>
 		<HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="2">
 			<children>
-				<Label styleClass="infoBoxes" text="Umstiege:" />
+				<Label styleClass="infoBoxes" text="Interchange:" />
 				<Label id="interchange" styleClass="infoBoxes" />
 			</children>
 		</HBox>
 		<HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.columnSpan="2">
 			<children>
-				<Label styleClass="infoBoxes" text="Dauer:" />
+				<Label styleClass="infoBoxes" text="Duration:" />
 				<Label id="duration" styleClass="infoBoxes" />
 			</children>
 		</HBox>
 		<HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="6" GridPane.columnSpan="2">
 			<children>
-				<Label styleClass="infoBoxes" text="Ankunft:" textAlignment="RIGHT" />
+				<Label styleClass="infoBoxes" text="Arrival:" textAlignment="RIGHT" />
 				<Label id="arrival" styleClass="infoBoxes" />
 			</children>
 		</HBox>
