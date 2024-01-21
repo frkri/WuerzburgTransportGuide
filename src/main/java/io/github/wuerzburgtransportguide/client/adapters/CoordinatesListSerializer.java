@@ -17,8 +17,9 @@ public class CoordinatesListSerializer implements JsonSerializer<CoordinatesList
     public JsonElement serialize(
             CoordinatesList src, Type typeOfSrc, JsonSerializationContext context) {
         var coordsList = new ArrayList<String>(src.getCoordinatesList().size());
+        // latitude, then longitude, because reasons I guess, sigh...
         for (var coordinates : src.getCoordinatesList())
-            coordsList.add(coordinates.getLongitude() + "," + coordinates.getLatitude());
+            coordsList.add(coordinates.getLatitude() + "," + coordinates.getLongitude());
 
         return new JsonPrimitive(String.join(" ", coordsList));
     }
