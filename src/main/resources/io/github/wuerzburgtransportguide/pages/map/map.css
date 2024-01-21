@@ -1,1 +1,22 @@
+.routeInfos {
+	-fx-font-size: 11;
+}
 
+#arrow {
+	-fx-text-fill: white;
+	-fx-font-size: 14;
+}
+
+#saveButton {
+	-fx-background-color: #4E5357;
+	-fx-text-fill: white;
+	-fx-alignment: right;
+}
+
+#start {
+	-fx-text-fill: #4D80FFB3;
+}
+
+#destination {
+	-fx-text-fill: #CC004DB3;
+}

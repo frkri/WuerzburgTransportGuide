@@ -78,7 +78,7 @@ public class AvailableRoutesController extends ControllerHelper implements IMapC
                                     || journey.getLegs().getLast().getPoints().isEmpty()) continue;
                             var departurePoint =
                                     journey.getLegs().getFirst().getPoints().getFirst();
-                            var arrivalPoint = journey.getLegs().getFirst().getPoints().getLast();
+                            var arrivalPoint = journey.getLegs().getLast().getPoints().getLast();
 
                             var date = (Label) journeyBox.lookup("#date");
                             var time = (Label) journeyBox.lookup("#time");
@@ -90,7 +90,7 @@ public class AvailableRoutesController extends ControllerHelper implements IMapC
                                     departurePoint.getDateTime().getDate().format(dateFormatter));
                             time.setText(departurePoint.getDateTime().getTime());
                             interchange.setText(journey.getInterchange() + "x");
-                            duration.setText(journey.getDuration() + " Min");
+                            duration.setText(journey.getDuration() + " h");
                             arrival.setText(arrivalPoint.getDateTime().getTime().toString());
 
                             journeyBox.setOnMouseClicked(
