@@ -13,9 +13,14 @@ import io.github.wuerzburgtransportguide.view.pages.ControllerHelper;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 
 import org.controlsfx.control.Notifications;
 
+import java.io.FileWriter;
+import java.text.MessageFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.NoSuchElementException;
 
 public class MapController extends ControllerHelper implements IMapContext {
@@ -46,6 +51,7 @@ public class MapController extends ControllerHelper implements IMapContext {
 
         var coords = legs.getFirst().getStopSeq().getFirst().getRef().getCoords();
         var startCenter = new MapPoint(coords.getLatitude(), coords.getLongitude());
+        var dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
 
         mapView.setCenter(startCenter);
         mapView.setZoom(13);
@@ -99,6 +105,70 @@ public class MapController extends ControllerHelper implements IMapContext {
             Util.visitSite("https://netzplan.vvm-info.de/");
         } catch (Exception e) {
             notificationBuilder.title("Cannot open site").text("Failed to open site").showError();
+        }
+    }
+
+    public void printRoute() {
+        FileWriter fileWriter;
+        StringBuilder stringBuilder = new StringBuilder();
+        FileChooser fileChooser = new FileChooser();
+
+        try {
+            var routePath = mapContext.journeys.getLegs().getFirst().getPoints();
+            var legCount = mapContext.journeys.getLegs();
+
+            // Header
+            stringBuilder.append(
+                    MessageFormat.format(
+                            """
+                            ┓ ┏┏┳┓┏┓
+                            ┃┃┃ ┃ ┃┓
+                            ┗┻┛ ┻ ┗┛
+
+                            Route:
+                            From: {0}
+                            To: {1}
+
+                            {2} {3}
+                            {4} x Interchange
+                            """,
+                            routePath.getFirst().getName(),
+                            mapContext.destination.getName(),
+                            routePath.getFirst().getDateTime().getDate(),
+                            routePath.getFirst().getDateTime().getTime(),
+                            mapContext.journeys.getInterchange()));
+
+            // Stops
+            for (var leg : mapContext.journeys.getLegs()) {
+                for (var stop : leg.getStopSeq()) {
+
+                    stringBuilder.append(
+                            MessageFormat.format(
+                                    """
+                            {0}     {1}
+                            Delay: {2}
+                            """,
+                                    (stop.getRef().getDepDateTime() != null
+                                            ? stop.getRef()
+                                                    .getDepDateTime()
+                                                    .format(DateTimeFormatter.ofPattern("HH:mm"))
+                                            : stop.getRef()
+                                                    .getArrDateTime()
+                                                    .format(DateTimeFormatter.ofPattern("HH:mm"))),
+                                    stop.getName(),
+                                    stop.getRef().getArrDelay()));
+                }
+            }
+
+            // TODO better filename, start - destination + dateTime
+            // TODO set file location
+            fileWriter = new FileWriter("test.txt");
+            fileWriter.write(stringBuilder.toString());
+
+            fileWriter.close();
+        } catch (Exception e) {
+            notificationBuilder.title("Cannot save file").text("Failed to save file").showError();
+            e.printStackTrace();
         }
     }
 
