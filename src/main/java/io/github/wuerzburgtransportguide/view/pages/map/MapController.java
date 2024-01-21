@@ -38,16 +38,19 @@ public class MapController extends ControllerHelper implements IMapContext {
     }
 
     public void initialize() {
+        var legs = mapContext.journeys.getLegs();
+
         start.setText(mapContext.start.getName());
         destination.setText(mapContext.destination.getName());
         var mapView = new MapView();
-        var wuCenter = new MapPoint(49.783333, 9.933333);
 
-        mapView.setCenter(wuCenter);
+        var coords = legs.getFirst().getStopSeq().getFirst().getRef().getCoords();
+        var startCenter = new MapPoint(coords.getLatitude(), coords.getLongitude());
+
+        mapView.setCenter(startCenter);
         mapView.setZoom(13);
 
         try {
-            var legs = mapContext.journeys.getLegs();
             for (var i = 0; i < legs.size(); i++) {
                 var leg = legs.get(i);
 
