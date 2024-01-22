@@ -51,12 +51,7 @@ public class StopsLayer extends MapLayer {
                 else stopIconView = new ImageView(stopIconPinNormal);
 
                 var popover = createPopOver(point, i, stopSeq.size(), stopIconView);
-                stopIconView.setOnMouseClicked(
-                        event -> {
-                            popover.show(stopIconView);
-                            // Show loader while loading stop info
-
-                        });
+                stopIconView.setOnMouseClicked(event -> popover.show(stopIconView));
 
                 var coordinates = point.getRef().getCoords();
                 add(
@@ -92,7 +87,8 @@ public class StopsLayer extends MapLayer {
             GetJourneys200ResponseInnerLegsInnerStopSeqInner stop,
             int stopIndex,
             int stopCount,
-            ImageView stopIconView) {
+            ImageView stopIconView)
+            throws NullPointerException {
         var localTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
         var popOverContainer = new VBox();
         popOverContainer.setSpacing(5);
@@ -106,10 +102,12 @@ public class StopsLayer extends MapLayer {
         header.getChildren().add(titleLabel);
         popOverContainer.getChildren().add(header);
 
-        var placeLabel = new Label("Place: " + stop.getPlace());
-        popOverContainer.getChildren().add(placeLabel);
+        if (stop.getPlace() != null) {
+            var placeLabel = new Label("Place: " + stop.getPlace());
+            popOverContainer.getChildren().add(placeLabel);
+        }
 
-        if (stop.getRef().getArrDateTime() != null) {
+        if (stop.getRef() != null && stop.getRef().getArrDateTime() != null) {
             var arrivalLabel =
                     new Label(
                             "Arrival: "
@@ -125,16 +123,18 @@ public class StopsLayer extends MapLayer {
             popOverContainer.getChildren().add(departureLabel);
         }
 
-        var currentDelayLabel = new Label("Current delay: " + stop.getRef().getArrDelay());
+        var currentDelayLabel = new Label("Current delay: +" + stop.getRef().getArrDelay());
         popOverContainer.getChildren().add(currentDelayLabel);
 
-        var coordsLabel =
-                new Label(
-                        "Coordinates: "
-                                + stop.getRef().getCoords().getLongitude()
-                                + ", "
-                                + stop.getRef().getCoords().getLatitude());
-        popOverContainer.getChildren().add(coordsLabel);
+        if (stop.getRef().getCoords() != null) {
+            var coordsLabel =
+                    new Label(
+                            "Coordinates: "
+                                    + stop.getRef().getCoords().getLongitude()
+                                    + ", "
+                                    + stop.getRef().getCoords().getLatitude());
+            popOverContainer.getChildren().add(coordsLabel);
+        }
 
         var popover = new PopOver(popOverContainer);
         popover.setArrowLocation(PopOver.ArrowLocation.TOP_CENTER);
