@@ -42,8 +42,8 @@ public class LineLayer extends MapLayer {
             polyline.getPoints().add(relativeMapPoint.getY());
         }
 
-        var firstPoint = coordinates.getFirst();
-        var lastPoint = coordinates.getLast();
+        var firstPoint = coordinates.get(0);
+        var lastPoint = coordinates.get(coordinates.size() - 1);
 
         var firstRelativePointMapPoint =
                 getMapPoint(firstPoint.getLatitude(), firstPoint.getLongitude());

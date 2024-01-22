@@ -73,12 +73,20 @@ public class AvailableRoutesController extends ControllerHelper implements IMapC
 
                             if (journey.getLegs() == null
                                     || journey.getLegs().isEmpty()
-                                    || journey.getLegs().getFirst().getPoints() == null
-                                    || journey.getLegs().getFirst().getPoints().isEmpty()
-                                    || journey.getLegs().getLast().getPoints().isEmpty()) continue;
-                            var departurePoint =
-                                    journey.getLegs().getFirst().getPoints().getFirst();
-                            var arrivalPoint = journey.getLegs().getLast().getPoints().getLast();
+                                    || journey.getLegs().get(0).getPoints() == null
+                                    || journey.getLegs().get(0).getPoints().isEmpty()
+                                    || journey.getLegs()
+                                            .get(journey.getLegs().size() - 1)
+                                            .getPoints()
+                                            .isEmpty()) continue;
+
+                            var firstLeg = journey.getLegs().get(0);
+                            var lastLegIndex = journey.getLegs().size() - 1;
+                            var lastLeg = journey.getLegs().get(lastLegIndex);
+                            var lastPointIndex = lastLeg.getPoints().size() - 1;
+
+                            var departurePoint = firstLeg.getPoints().get(0);
+                            var arrivalPoint = lastLeg.getPoints().get(lastPointIndex);
 
                             var date = (Label) journeyBox.lookup("#date");
                             var time = (Label) journeyBox.lookup("#time");

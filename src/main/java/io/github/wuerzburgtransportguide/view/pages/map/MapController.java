@@ -6,6 +6,7 @@ import com.gluonhq.maps.MapView;
 import io.github.wuerzburgtransportguide.SceneController;
 import io.github.wuerzburgtransportguide.Util;
 import io.github.wuerzburgtransportguide.api.NetzplanApi;
+import io.github.wuerzburgtransportguide.model.GetJourneys200ResponseInnerLegsInner;
 import io.github.wuerzburgtransportguide.view.context.IMapContext;
 import io.github.wuerzburgtransportguide.view.context.MapContext;
 import io.github.wuerzburgtransportguide.view.pages.ControllerHelper;
@@ -16,11 +17,12 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 
 import org.controlsfx.control.Notifications;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.FileWriter;
 import java.text.MessageFormat;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public class MapController extends ControllerHelper implements IMapContext {
@@ -49,9 +51,8 @@ public class MapController extends ControllerHelper implements IMapContext {
         destination.setText(mapContext.destination.getName());
         var mapView = new MapView();
 
-        var coords = legs.getFirst().getStopSeq().getFirst().getRef().getCoords();
-        var startCenter = new MapPoint(coords.getLatitude(), coords.getLongitude());
-        var dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
+        var cords = legs.get(0).getStopSeq().get(0).getRef().getCoords();
+        var startCenter = new MapPoint(cords.getLatitude(), cords.getLongitude());
 
         mapView.setCenter(startCenter);
         mapView.setZoom(13);
@@ -63,16 +64,7 @@ public class MapController extends ControllerHelper implements IMapContext {
                 var lineLayer = new LineLayer(leg.getPath(), i % 2 == 0);
                 mapView.addLayer(lineLayer);
 
-                StopsLayer stopsLayer;
-                if (i == 0) {
-                    stopsLayer =
-                            new StopsLayer(
-                                    netzplanService, leg.getStopSeq(), true, (legs.size() == 1));
-                } else if (i == legs.size() - 1) {
-                    stopsLayer = new StopsLayer(netzplanService, leg.getStopSeq(), false, true);
-                } else {
-                    stopsLayer = new StopsLayer(netzplanService, leg.getStopSeq(), false, false);
-                }
+                StopsLayer stopsLayer = getStopsLayer(i, leg, legs);
 
                 mapView.addLayer(stopsLayer);
             }
@@ -89,6 +81,21 @@ public class MapController extends ControllerHelper implements IMapContext {
         }
 
         mapContainer.getChildren().add(mapView);
+    }
+
+    @NotNull private StopsLayer getStopsLayer(
+            int i,
+            GetJourneys200ResponseInnerLegsInner leg,
+            List<GetJourneys200ResponseInnerLegsInner> legs) {
+        StopsLayer stopsLayer;
+        if (i == 0) {
+            stopsLayer = new StopsLayer(leg.getStopSeq(), true, (legs.size() == 1));
+        } else if (i == legs.size() - 1) {
+            stopsLayer = new StopsLayer(leg.getStopSeq(), false, true);
+        } else {
+            stopsLayer = new StopsLayer(leg.getStopSeq(), false, false);
+        }
+        return stopsLayer;
     }
 
     public void visitOpenStreetMap() {
@@ -114,8 +121,7 @@ public class MapController extends ControllerHelper implements IMapContext {
         FileChooser fileChooser = new FileChooser();
 
         try {
-            var routePath = mapContext.journeys.getLegs().getFirst().getPoints();
-            var legCount = mapContext.journeys.getLegs();
+            var routePath = mapContext.journeys.getLegs().get(0).getPoints();
 
             // Header
             stringBuilder.append(
@@ -132,10 +138,10 @@ public class MapController extends ControllerHelper implements IMapContext {
                             {2} {3}
                             {4} x Interchange
                             """,
-                            routePath.getFirst().getName(),
+                            routePath.get(0).getName(),
                             mapContext.destination.getName(),
-                            routePath.getFirst().getDateTime().getDate(),
-                            routePath.getFirst().getDateTime().getTime(),
+                            routePath.get(0).getDateTime().getDate(),
+                            routePath.get(0).getDateTime().getTime(),
                             mapContext.journeys.getInterchange()));
 
             // Stops

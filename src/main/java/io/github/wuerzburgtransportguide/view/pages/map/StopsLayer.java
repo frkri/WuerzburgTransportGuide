@@ -4,7 +4,6 @@ import com.gluonhq.maps.MapLayer;
 import com.gluonhq.maps.MapPoint;
 
 import io.github.wuerzburgtransportguide.Util;
-import io.github.wuerzburgtransportguide.api.NetzplanApi;
 import io.github.wuerzburgtransportguide.model.GetJourneys200ResponseInnerLegsInnerStopSeqInner;
 
 import javafx.geometry.Insets;
@@ -28,7 +27,6 @@ public class StopsLayer extends MapLayer {
     private final ArrayList<Pair<MapPoint, ImageView>> stopPoints = new ArrayList<>();
 
     public StopsLayer(
-            NetzplanApi netzplanService,
             List<GetJourneys200ResponseInnerLegsInnerStopSeqInner> stopSeq,
             boolean isOrigin,
             boolean isDestination) {
