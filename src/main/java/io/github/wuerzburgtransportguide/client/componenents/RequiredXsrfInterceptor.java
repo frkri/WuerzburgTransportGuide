@@ -60,6 +60,7 @@ public class RequiredXsrfInterceptor implements Interceptor {
         for (var path : cookiePaths) {
             var request = new Request.Builder().url(path).headers(headers).build();
             var response = client.newCall(request).execute();
+            response.close();
 
             if (!response.isSuccessful()) continue;
             return Cookie.parseAll(request.url(), response.headers());
