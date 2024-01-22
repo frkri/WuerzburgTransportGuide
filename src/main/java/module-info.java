@@ -12,6 +12,8 @@ module io.github.wuerzburgtransportguide {
     requires java.desktop;
     requires org.apache.commons.text;
     requires org.openapitools.jackson.nullable;
+    requires com.gluonhq.attach.storage;
+    requires com.gluonhq.attach.util;
 
     opens io.github.wuerzburgtransportguide to
             javafx.fxml;
@@ -44,5 +46,15 @@ module io.github.wuerzburgtransportguide {
     exports io.github.wuerzburgtransportguide.view.pages;
 
     opens io.github.wuerzburgtransportguide.view.pages to
+            javafx.fxml;
+
+    exports io.github.wuerzburgtransportguide.storage;
+
+    opens io.github.wuerzburgtransportguide.storage to
+            javafx.fxml;
+
+    exports io.github.wuerzburgtransportguide.storage.cache;
+
+    opens io.github.wuerzburgtransportguide.storage.cache to
             javafx.fxml;
 }
