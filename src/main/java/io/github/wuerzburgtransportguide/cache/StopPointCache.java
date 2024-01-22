@@ -54,13 +54,6 @@ public class StopPointCache implements Serializable {
     }
 
     public void saveToStorage() throws IOException {
-        if (Files.exists(path)) {
-            Files.delete(path);
-            Files.createFile(path);
-        } else {
-            Files.createFile(path);
-        }
-
         var writer = new ObjectOutputStream(new FileOutputStream(path.toFile()));
         writer.writeObject(stopPointCache);
     }

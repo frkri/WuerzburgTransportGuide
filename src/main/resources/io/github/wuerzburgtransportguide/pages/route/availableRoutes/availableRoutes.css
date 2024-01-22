@@ -4,3 +4,8 @@
 	-fx-text-fill: white;
 	-fx-background-radius: 15;
 }
+
+#availableRoutes {
+	-fx-font-size: 15;
+	-fx-text-fill: white;
+}
