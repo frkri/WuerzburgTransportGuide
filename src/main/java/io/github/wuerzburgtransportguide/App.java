@@ -60,7 +60,7 @@ public class App extends Application {
             NetzplanApi netzplanService,
             Notifications notificationBuilder,
             List<Pair<Class<?>, Object>> contextClasses) {
-        var sceneController = new SceneController(stage, pages, 800, 500);
+        var sceneController = new SceneController(stage, pages, 1400, 800);
         var injectorLoader =
                 buildDependencyInjectorLoader(
                         netzplanService, sceneController, notificationBuilder, contextClasses);
