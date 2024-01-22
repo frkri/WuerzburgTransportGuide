@@ -7,7 +7,7 @@
 	-fx-font-size: 12;
 }
 
-#saveButton {
+.button {
 	-fx-control-inner-background: #4E5357;
 	-fx-background-color: #4E5357;
 	-fx-background-radius: 10;

@@ -209,4 +209,15 @@ public class MapController extends ControllerHelper implements IMapContext {
     public void setMapContext(MapContext mapContext) {
         this.mapContext = mapContext;
     }
+
+    public void navigateBack() {
+        try {
+            sceneController.navigateBack();
+        } catch (IndexOutOfBoundsException e) {
+            notificationBuilder
+                    .title("Cannot navigate forwards")
+                    .text("Route page not found")
+                    .showError();
+        }
+    }
 }
