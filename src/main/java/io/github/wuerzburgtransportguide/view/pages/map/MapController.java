@@ -137,6 +137,7 @@ public class MapController extends ControllerHelper implements IMapContext {
 
                             {2} {3}
                             {4} x Interchange
+
                             """,
                             routePath.get(0).getName(),
                             mapContext.destination.getName(),
@@ -145,15 +146,24 @@ public class MapController extends ControllerHelper implements IMapContext {
                             mapContext.journeys.getInterchange()));
 
             // Stops
-            for (var leg : mapContext.journeys.getLegs()) {
-                for (var stop : leg.getStopSeq()) {
+            for (var i = 0; mapContext.journeys.getLegs().size() > i; i++) {
+                var leg = mapContext.journeys.getLegs().get(i);
+                stringBuilder.append(
+                        MessageFormat.format(
+                                """
 
+                                        {0}     {1}
+
+                                        """,
+                                leg.getMode().getName(), leg.getMode().getDestination()));
+
+                for (var stop : leg.getStopSeq()) {
                     stringBuilder.append(
                             MessageFormat.format(
                                     """
-                            {0}     {1}
-                            Delay: {2}
-                            """,
+                                            {0}     {1}
+                                            Delay: {2}
+                                            """,
                                     (stop.getRef().getDepDateTime() != null
                                             ? stop.getRef()
                                                     .getDepDateTime()
@@ -164,14 +174,31 @@ public class MapController extends ControllerHelper implements IMapContext {
                                     stop.getName(),
                                     stop.getRef().getArrDelay()));
                 }
+                if (mapContext.journeys.getLegs().size() - 1 != i) {
+                    stringBuilder.append(
+                            MessageFormat.format(
+                                    """
+
+                                            {0}. Interchange
+
+                                            """,
+                                    i + 1));
+                }
+
+                // TODO better filename, start - destination + dateTime
+                // TODO set file location
+
+                var file =
+                        String.format(
+                                "Route_"
+                                        + mapContext.start.getName()
+                                        + " - "
+                                        + mapContext.destination.getName());
+                fileWriter = new FileWriter(file);
+                fileWriter.write(stringBuilder.toString());
+
+                fileWriter.close();
             }
-
-            // TODO better filename, start - destination + dateTime
-            // TODO set file location
-            fileWriter = new FileWriter("test.txt");
-            fileWriter.write(stringBuilder.toString());
-
-            fileWriter.close();
         } catch (Exception e) {
             notificationBuilder.title("Cannot save file").text("Failed to save file").showError();
             e.printStackTrace();
