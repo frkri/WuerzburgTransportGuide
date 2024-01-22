@@ -4,6 +4,7 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 
 <VBox id="background" fx:id="mapContainer" alignment="TOP_CENTER" prefHeight="800.0" prefWidth="1000.0" spacing="20.0" styleClass="background"
 	xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.wuerzburgtransportguide.view.pages.map.MapController"
@@ -37,6 +38,8 @@
 						<ColumnConstraints fillWidth="true" hgrow="SOMETIMES" minWidth="10.0" />
 						<ColumnConstraints fillWidth="true" hgrow="SOMETIMES" minWidth="10.0" />
 						<ColumnConstraints fillWidth="true" hgrow="SOMETIMES" minWidth="10.0" />
+						<ColumnConstraints fillWidth="true" hgrow="SOMETIMES" minWidth="10.0" />
+						<ColumnConstraints fillWidth="true" hgrow="SOMETIMES" minWidth="10.0" />
 					</columnConstraints>
 					<rowConstraints>
 						<RowConstraints minHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -44,10 +47,12 @@
 					<children>
 						<Hyperlink onAction="#visitOpenStreetMap" styleClass="routeInfos" text="Map data from OpenStreetMap" GridPane.columnIndex="0" GridPane.columnSpan="2" />
 						<Hyperlink onAction="#visitVVM" styleClass="routeInfos" text="Public Transport data from VVM" GridPane.columnIndex="2" GridPane.columnSpan="2" />
-						<Label fx:id="start" styleClass="routeInfos" GridPane.columnIndex="4" GridPane.columnSpan="2" />
-						<Label fx:id="arrow" styleClass="routeInfos" text="----&gt;" GridPane.columnIndex="6" />
-						<Label fx:id="destination" styleClass="routeInfos" GridPane.columnIndex="7" GridPane.columnSpan="2" />
-						<Button fx:id="saveButton" mnemonicParsing="false" onAction="#printRoute" styleClass="routeInfos" text="Button" GridPane.columnIndex="9" />
+						<Circle GridPane.columnIndex="4" fill="#4D80FFB3" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
+						<Label fx:id="start" styleClass="routeInfos" GridPane.columnIndex="5" GridPane.columnSpan="2" />
+						<Label fx:id="arrow" styleClass="routeInfos" text="-&gt;" GridPane.columnIndex="7" />
+						<Circle GridPane.columnIndex="8" fill="#CC004DB3" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
+						<Label fx:id="destination" styleClass="routeInfos" GridPane.columnIndex="9" GridPane.columnSpan="2" />
+						<Button fx:id="saveButton" mnemonicParsing="false" onAction="#printRoute" styleClass="routeInfos" text="Save" GridPane.columnIndex="11" />
 					</children>
 				</GridPane>
 			</children>
