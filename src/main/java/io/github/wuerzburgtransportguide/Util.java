@@ -16,7 +16,7 @@ public final class Util {
         Path path = null;
 
         if (os.contains("win")) {
-            path = Path.of(System.getenv("AppData"), "Local", "Temp", "wuerzburgtransportguide");
+            path = Path.of(System.getenv("TEMP"), "wuerzburgtransportguide");
         } else if (os.contains("linux")) {
             path = Path.of(System.getProperty("user.home"), ".cache", "wuerzburgtransportguide");
         } else if (os.contains("mac")) {
