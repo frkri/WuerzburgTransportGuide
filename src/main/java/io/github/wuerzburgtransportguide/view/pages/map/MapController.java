@@ -13,6 +13,7 @@ import io.github.wuerzburgtransportguide.view.pages.ControllerHelper;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 
@@ -33,10 +34,6 @@ public class MapController extends ControllerHelper implements IMapContext {
 
     private MapContext mapContext;
 
-    public MapController() {
-        super();
-    }
-
     public MapController(
             NetzplanApi apiService,
             SceneController sceneController,
@@ -46,16 +43,18 @@ public class MapController extends ControllerHelper implements IMapContext {
 
     public void initialize() {
         var legs = mapContext.journeys.getLegs();
-
         start.setText(mapContext.start.getName());
         destination.setText(mapContext.destination.getName());
-        var mapView = new MapView();
 
         var cords = legs.get(0).getStopSeq().get(0).getRef().getCoords();
         var startCenter = new MapPoint(cords.getLatitude(), cords.getLongitude());
 
+        var mapView = new MapView();
         mapView.setCenter(startCenter);
         mapView.setZoom(13);
+
+        var loadingImage = new Image(Util.getResource("assets/loading_bg.png").toString());
+        MapView.setPlaceholderImageSupplier(() -> loadingImage);
 
         try {
             for (var i = 0; i < legs.size(); i++) {
