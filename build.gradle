@@ -19,10 +19,6 @@ ext {
 	junitVersion = '5.10.1'
 }
 
-tasks.withType(JavaCompile).configureEach {
-	options.encoding = 'UTF-8'
-}
-
 application {
 	mainModule = 'io.github.wuerzburgtransportguide'
 	mainClass = 'io.github.wuerzburgtransportguide.App'
@@ -36,6 +32,7 @@ application {
 }
 
 compileJava {
+	options.encoding = 'UTF-8'
 	options.compilerArgs += [
 		'--add-exports',
 		'com.gluonhq.attach.util/com.gluonhq.attach.util.impl=io.github.wuerzburgtransportguide'
