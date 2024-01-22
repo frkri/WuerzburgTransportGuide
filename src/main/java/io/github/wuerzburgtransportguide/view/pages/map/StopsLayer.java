@@ -123,7 +123,7 @@ public class StopsLayer extends MapLayer {
             popOverContainer.getChildren().add(departureLabel);
         }
 
-        var currentDelayLabel = new Label("Current delay: +" + stop.getRef().getArrDelay());
+        var currentDelayLabel = new Label("Current delay: " + stop.getRef().getArrDelay());
         popOverContainer.getChildren().add(currentDelayLabel);
 
         if (stop.getRef().getCoords() != null) {
