@@ -61,11 +61,11 @@ public class MapController extends ControllerHelper implements IMapContext {
             for (var i = 0; i < legs.size(); i++) {
                 var leg = legs.get(i);
 
-                var lineLayer = new LineLayer(leg.getPath(), i % 2 == 0);
+                var isStartOrDestination = i == 0 || i == legs.size() - 1;
+                var lineLayer = new LineLayer(leg.getPath(), isStartOrDestination);
                 mapView.addLayer(lineLayer);
 
                 StopsLayer stopsLayer = getStopsLayer(i, leg, legs);
-
                 mapView.addLayer(stopsLayer);
             }
         } catch (NullPointerException | NoSuchElementException e) {
