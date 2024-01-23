@@ -1,4 +1,4 @@
-package io.github.wuerzburgtransportguide.cache;
+package io.github.wuerzburgtransportguide.storage.cache;
 
 import io.github.wuerzburgtransportguide.model.Poi;
 
@@ -47,10 +47,16 @@ public class StopPointCache implements Serializable {
         stopPointCache.put(query.toLowerCase(), pois);
     }
 
+    @SuppressWarnings("unchecked")
     public void loadFromStorage() throws IOException, ClassNotFoundException {
         if (!Files.exists(path)) throw new FileNotFoundException();
         var reader = new ObjectInputStream(new FileInputStream(path.toFile()));
-        stopPointCache = (HashMap<String, List<Poi>>) reader.readObject();
+        var hashMapObject = reader.readObject();
+        if (hashMapObject instanceof HashMap<?, ?>) {
+            stopPointCache = (HashMap<String, List<Poi>>) hashMapObject;
+        } else {
+            throw new IOException("Invalid file format");
+        }
     }
 
     public void saveToStorage() throws IOException {

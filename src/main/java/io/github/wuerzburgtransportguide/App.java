@@ -1,7 +1,11 @@
 package io.github.wuerzburgtransportguide;
 
+import com.gluonhq.attach.util.Services;
+
 import io.github.wuerzburgtransportguide.api.NetzplanApi;
 import io.github.wuerzburgtransportguide.client.ApiClient;
+import io.github.wuerzburgtransportguide.storage.StorageServiceFactory;
+import io.github.wuerzburgtransportguide.storage.cache.MapStorageService;
 import io.github.wuerzburgtransportguide.view.context.IMapContext;
 import io.github.wuerzburgtransportguide.view.context.MapContext;
 import io.github.wuerzburgtransportguide.view.pages.ControllerHelper;
@@ -122,6 +126,11 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
+        System.setProperty("javafx.platform", "Desktop");
+        var storageService = new MapStorageService();
+        var storageFactory = new StorageServiceFactory(storageService);
+
+        Services.registerServiceFactory(storageFactory);
         launch();
     }
 }
