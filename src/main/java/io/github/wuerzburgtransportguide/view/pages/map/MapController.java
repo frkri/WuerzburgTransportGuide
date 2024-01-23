@@ -118,8 +118,6 @@ public class MapController extends ControllerHelper implements IMapContext {
     public void printRoute() {
         FileWriter fileWriter;
         StringBuilder stringBuilder = new StringBuilder();
-        FileChooser fileChooser = new FileChooser();
-
         try {
             var routePath = mapContext.journeys.getLegs().get(0).getPoints();
 
@@ -158,19 +156,20 @@ public class MapController extends ControllerHelper implements IMapContext {
                                 leg.getMode().getName(), leg.getMode().getDestination()));
 
                 for (var stop : leg.getStopSeq()) {
+                    var ref = stop.getRef();
+
+                    if (ref == null) continue;
+
                     stringBuilder.append(
                             MessageFormat.format(
                                     """
                                             {0}     {1}
                                             Delay: {2}
                                             """,
-                                    (stop.getRef().getDepDateTime() != null
-                                            ? stop.getRef()
-                                                    .getDepDateTime()
+                                    (ref.getDepDateTime() != null
+                                            ? ref.getDepDateTime()
                                                     .format(DateTimeFormatter.ofPattern("HH:mm"))
-                                            : stop.getRef()
-                                                    .getArrDateTime()
-                                                    .format(DateTimeFormatter.ofPattern("HH:mm"))),
+                                            : ""),
                                     stop.getName(),
                                     stop.getRef().getArrDelay()));
                 }
@@ -188,17 +187,31 @@ public class MapController extends ControllerHelper implements IMapContext {
                 // TODO better filename, start - destination + dateTime
                 // TODO set file location
 
-                var file =
-                        String.format(
-                                "Route_"
-                                        + mapContext.start.getName()
-                                        + " - "
-                                        + mapContext.destination.getName());
-                fileWriter = new FileWriter(file);
-                fileWriter.write(stringBuilder.toString());
-
-                fileWriter.close();
             }
+
+            var file =
+                    String.format(
+                            "Route_"
+                                    + mapContext.start.getName()
+                                    + " - "
+                                    + mapContext.destination.getName());
+
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setInitialFileName(file);
+
+            FileChooser.ExtensionFilter extFilter =
+                    new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+
+            fileChooser.getExtensionFilters().add((extFilter));
+            var result = fileChooser.showSaveDialog(null);
+            if (result == null) return;
+
+            var filePath = result.getPath();
+
+            fileWriter = new FileWriter(filePath);
+            fileWriter.write(stringBuilder.toString());
+
+            fileWriter.close();
         } catch (Exception e) {
             notificationBuilder.title("Cannot save file").text("Failed to save file").showError();
             e.printStackTrace();
