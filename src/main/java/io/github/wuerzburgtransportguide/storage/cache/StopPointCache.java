@@ -57,11 +57,13 @@ public class StopPointCache implements Serializable {
         } else {
             throw new IOException("Invalid file format");
         }
+        reader.close();
     }
 
     public void saveToStorage() throws IOException {
         var writer = new ObjectOutputStream(new FileOutputStream(path.toFile()));
         writer.writeObject(stopPointCache);
+        writer.close();
     }
 
     public void clear() throws IOException {
