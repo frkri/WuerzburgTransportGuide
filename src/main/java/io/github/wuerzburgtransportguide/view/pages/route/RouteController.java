@@ -162,12 +162,12 @@ public class RouteController extends ControllerHelper implements IMapContext {
                                 response.body().stream()
                                         .filter(poi -> poi.getType() == PoiType.STOP)
                                         .toList();
+                        if (filteredStops.isEmpty()) return;
 
                         stopPointCache.put(query, filteredStops);
                         Platform.runLater(
                                 () -> {
-                                    if (start.getText() != null && query.equals(start.getText()))
-                                        listDataView.setAll(filteredStops);
+                                    if (start.getText() != null) listDataView.setAll(filteredStops);
                                 });
                     } catch (IOException e) {
                         Platform.runLater(
