@@ -21,6 +21,7 @@ import org.controlsfx.control.Notifications;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.FileWriter;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -124,9 +125,12 @@ public class MapController extends ControllerHelper implements IMapContext {
             stringBuilder.append(
                     MessageFormat.format(
                             """
-                            ┓ ┏┏┳┓┏┓
-                            ┃┃┃ ┃ ┃┓
-                            ┗┻┛ ┻ ┗┛
+                            ██     ██ ████████  ██████ \s
+                            ██     ██    ██    ██      \s
+                            ██  █  ██    ██    ██   ███\s
+                            ██ ███ ██    ██    ██    ██\s
+                             ███ ███     ██     ██████ \s
+
 
                             Route:
                             From: {0}
@@ -162,8 +166,10 @@ public class MapController extends ControllerHelper implements IMapContext {
                     stringBuilder.append(
                             MessageFormat.format(
                                     """
-                                            {0}     {1}
-                                            Delay: {2}
+                                            |
+                                            0 {0} {1}
+                                            0 Delay:{2}
+                                            |
                                             """,
                                     (ref.getDepDateTime() != null
                                             ? ref.getDepDateTime()
@@ -176,16 +182,13 @@ public class MapController extends ControllerHelper implements IMapContext {
                     stringBuilder.append(
                             MessageFormat.format(
                                     """
-
+                                            U
+                                            ---
                                             {0}. Interchange
 
                                             """,
                                     i + 1));
                 }
-
-                // TODO better filename, start - destination + dateTime
-                // TODO set file location
-
             }
 
             var file =
@@ -194,7 +197,6 @@ public class MapController extends ControllerHelper implements IMapContext {
                                     + mapContext.start.getName()
                                     + " - "
                                     + mapContext.destination.getName());
-
             FileChooser fileChooser = new FileChooser();
             fileChooser.setInitialFileName(file);
 
@@ -205,15 +207,15 @@ public class MapController extends ControllerHelper implements IMapContext {
             var result = fileChooser.showSaveDialog(null);
             if (result == null) return;
 
-            var filePath = result.getPath();
-
-            fileWriter = new FileWriter(filePath);
+            fileWriter = new FileWriter(result.getPath(), StandardCharsets.UTF_8);
             fileWriter.write(stringBuilder.toString());
 
             fileWriter.close();
         } catch (Exception e) {
-            notificationBuilder.title("Cannot save file").text("Failed to save file").showError();
-            e.printStackTrace();
+            notificationBuilder
+                    .title("Cannot export file")
+                    .text("Failed to export journey to file")
+                    .showError();
         }
     }
 
