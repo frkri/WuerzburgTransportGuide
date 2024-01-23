@@ -33,7 +33,7 @@ public class RouteController extends ControllerHelper implements IMapContext {
 
     private static final Duration QUERY_DELAY = Duration.millis(250);
     private static final int MIN_QUERY_LENGTH = 2;
-    private static final int CACHE_MATCH_THRESHOLD = 4;
+    private static final int CACHE_MATCH_THRESHOLD = 2;
 
     private final ObservableList<Poi> startListDataView =
             FXCollections.observableArrayList(new ArrayList<>());
@@ -166,7 +166,7 @@ public class RouteController extends ControllerHelper implements IMapContext {
                         stopPointCache.put(query, filteredStops);
                         Platform.runLater(
                                 () -> {
-                                    if (start.getText() != null || query.equals(start.getText()))
+                                    if (start.getText() != null && query.equals(start.getText()))
                                         listDataView.setAll(filteredStops);
                                 });
                     } catch (IOException e) {
