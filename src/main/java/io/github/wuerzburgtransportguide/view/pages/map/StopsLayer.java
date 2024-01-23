@@ -37,7 +37,7 @@ public class StopsLayer extends MapLayer {
             var stopIconPinTransfer =
                     new Image(Util.getResource("assets/transfer_within_a_station.png").toString());
             var stopIconPinStart = new Image(Util.getResource("assets/trip_origin.png").toString());
-            var stopIconPinEnd = new Image(Util.getResource("assets/location_on.png").toString());
+            var stopIconPinEnd = new Image(Util.getResource("assets/flag.png").toString());
 
             for (var i = 0; i < stopSeq.size(); i++) {
                 var point = stopSeq.get(i);
