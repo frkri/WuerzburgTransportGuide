@@ -85,8 +85,13 @@ public class RouteController extends ControllerHelper implements IMapContext {
         startList.setItems(startListDataView);
         destinationList.setItems(destinationListDataView);
 
+        if (mapContext.start != null && mapContext.destination != null) {
+            start.setText(mapContext.start.getName());
+            destination.setText(mapContext.destination.getName());
+        }
         start.textProperty().addListener(buildValueChangeListener(startListDataView));
         destination.textProperty().addListener(buildValueChangeListener(destinationListDataView));
+
         startList
                 .getSelectionModel()
                 .selectedItemProperty()
@@ -159,13 +164,11 @@ public class RouteController extends ControllerHelper implements IMapContext {
                                         .toList();
 
                         stopPointCache.put(query, filteredStops);
-
                         Platform.runLater(
                                 () -> {
                                     if (start.getText() != null || query.equals(start.getText()))
                                         listDataView.setAll(filteredStops);
                                 });
-
                     } catch (IOException e) {
                         Platform.runLater(
                                 () ->
