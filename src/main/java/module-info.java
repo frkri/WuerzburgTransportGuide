@@ -29,8 +29,6 @@ module io.github.wuerzburgtransportguide {
 
     opens io.github.wuerzburgtransportguide.view.pages.map to
             javafx.fxml;
-
-
     opens io.github.wuerzburgtransportguide.view.pages.route to
             javafx.fxml;
 
