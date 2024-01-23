@@ -159,12 +159,14 @@ public class AvailableRoutesController extends ControllerHelper implements IMapC
                                             }
                                         });
                             } catch (IOException e) {
+                                Platform.runLater(
+                                        () -> 
                                 notificationBuilder
                                         .title("Could not fetch journeys")
                                         .text(
                                                 "An network error has occurred while loading"
                                                         + " journeys")
-                                        .showError();
+                                        .showError());
                             }
                         });
     }
