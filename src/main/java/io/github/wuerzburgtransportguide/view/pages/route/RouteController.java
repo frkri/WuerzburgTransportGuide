@@ -156,15 +156,19 @@ public class RouteController extends ControllerHelper implements IMapContext {
                                 Platform.runLater(() -> listDataView.setAll(filteredStops));
                                 stopPointCache.put(query, filteredStops);
                             } catch (IOException e) {
-                                notificationBuilder
-                                        .title("Network Error")
-                                        .text("Could not fetch stops from server")
-                                        .showError();
+                                Platform.runLater(
+                                        () ->
+                                                notificationBuilder
+                                                        .title("Network Error")
+                                                        .text("Could not fetch stops from server")
+                                                        .showError());
                             } catch (NotFoundException e) {
-                                notificationBuilder
-                                        .title("No stops found")
-                                        .text(e.getMessage())
-                                        .showWarning();
+                                Platform.runLater(
+                                        () ->
+                                                notificationBuilder
+                                                        .title("No stops found")
+                                                        .text(e.getMessage())
+                                                        .showWarning());
                             }
                         },
                         QUERY_DELAY,
