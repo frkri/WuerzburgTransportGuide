@@ -43,19 +43,23 @@ public class MapController extends ControllerHelper implements IMapContext {
     }
 
     public void initialize() {
+        var loadingImage = new Image(Util.getResource("assets/loading_bg.png").toString());
         var legs = mapContext.journeys.getLegs();
-        start.setText(mapContext.start.getName());
-        destination.setText(mapContext.destination.getName());
-
-        var cords = legs.get(0).getStopSeq().get(0).getRef().getCoords();
-        var startCenter = new MapPoint(cords.getLatitude(), cords.getLongitude());
+        var startStopPoint =
+                new MapPoint(mapContext.start.getCentery(), mapContext.start.getCenterx());
+        var endStopPoint =
+                new MapPoint(
+                        mapContext.destination.getCentery(), mapContext.destination.getCenterx());
 
         var mapView = new MapView();
-        mapView.setCenter(startCenter);
+        MapView.setPlaceholderImageSupplier(() -> loadingImage);
+        mapView.setCenter(startStopPoint);
         mapView.setZoom(13);
 
-        var loadingImage = new Image(Util.getResource("assets/loading_bg.png").toString());
-        MapView.setPlaceholderImageSupplier(() -> loadingImage);
+        start.setText(mapContext.start.getName());
+        destination.setText(mapContext.destination.getName());
+        start.setOnMouseClicked(event -> mapView.flyTo(0D, startStopPoint, 1.5D));
+        destination.setOnMouseClicked(event -> mapView.flyTo(0D, endStopPoint, 1.5D));
 
         try {
             for (var i = 0; i < legs.size(); i++) {
