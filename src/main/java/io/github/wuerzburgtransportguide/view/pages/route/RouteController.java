@@ -10,13 +10,16 @@ import io.github.wuerzburgtransportguide.view.context.IMapContext;
 import io.github.wuerzburgtransportguide.view.context.MapContext;
 import io.github.wuerzburgtransportguide.view.pages.ControllerHelper;
 
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.util.Duration;
 
 import org.controlsfx.control.Notifications;
 
@@ -28,9 +31,9 @@ import java.util.concurrent.*;
 
 public class RouteController extends ControllerHelper implements IMapContext {
 
+    private static final Duration QUERY_DELAY = Duration.millis(250);
     private static final int MIN_QUERY_LENGTH = 2;
-    private static final int QUERY_DELAY = 200;
-    private static final int CACHE_MATCH_THRESHOLD = 3;
+    private static final int CACHE_MATCH_THRESHOLD = 4;
 
     private final ObservableList<Poi> startListDataView =
             FXCollections.observableArrayList(new ArrayList<>());
@@ -38,9 +41,8 @@ public class RouteController extends ControllerHelper implements IMapContext {
     private final ObservableList<Poi> destinationListDataView =
             FXCollections.observableArrayList(new ArrayList<>());
 
-    private final ScheduledExecutorService executorService =
-            Executors.newSingleThreadScheduledExecutor();
-    private ScheduledFuture<?> scheduledFuture;
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
+    private final PauseTransition apiCallDebounce = new PauseTransition(QUERY_DELAY);
     private StopPointCache stopPointCache;
     private Boolean isInternalChange = false;
 
@@ -59,7 +61,6 @@ public class RouteController extends ControllerHelper implements IMapContext {
     }
 
     public void initialize() {
-
         try {
             stopPointCache =
                     new StopPointCache(
@@ -84,11 +85,8 @@ public class RouteController extends ControllerHelper implements IMapContext {
         startList.setItems(startListDataView);
         destinationList.setItems(destinationListDataView);
 
-        start.textProperty()
-                .addListener((observableValue, s, t1) -> handleQuery(t1, startListDataView));
-        destination
-                .textProperty()
-                .addListener((observableValue, s, t1) -> handleQuery(t1, destinationListDataView));
+        start.textProperty().addListener(buildValueChangeListener(startListDataView));
+        destination.textProperty().addListener(buildValueChangeListener(destinationListDataView));
         startList
                 .getSelectionModel()
                 .selectedItemProperty()
@@ -113,66 +111,78 @@ public class RouteController extends ControllerHelper implements IMapContext {
                         });
     }
 
+    private ChangeListener<String> buildValueChangeListener(ObservableList<Poi> listDataView) {
+        return (observable, oldValue, query) -> {
+            if (isInternalChange) return;
+            var stopPoints = stopPointCache.get(query);
+            if (stopPoints != null) {
+                Platform.runLater(() -> listDataView.setAll(stopPoints));
+                return;
+            }
+
+            if (query.length() <= MIN_QUERY_LENGTH) return;
+            apiCallDebounce.setOnFinished(event -> handleQuery(query, listDataView));
+            apiCallDebounce.playFromStart();
+        };
+    }
+
     private static ListCell<Poi> createCellCallback(ListView<Poi> listView) {
         return new ListCell<>() {
             @Override
             protected void updateItem(Poi item, boolean empty) {
                 super.updateItem(item, empty);
-                if (item == null || empty) {
-                    setText(null);
-                } else {
+                if (item != null && !empty) {
                     setText(item.getName());
+                } else {
+                    setText(null);
                 }
             }
         };
     }
 
     public void handleQuery(String query, ObservableList<Poi> listDataView) {
-        if (isInternalChange) return;
+        // Get stop points from API
+        executorService.submit(
+                () -> {
+                    try {
+                        var request = netzplanService.getPlaces(Locale.getDefault(), query);
+                        var response = request.execute();
 
-        var stopPoints = stopPointCache.get(query);
-        if (stopPoints != null) Platform.runLater(() -> listDataView.setAll(stopPoints));
+                        if (response.code() == 500)
+                            throw new NotFoundException("Could not find any stops matching query");
+                        if (!response.isSuccessful() || response.body() == null)
+                            throw new IOException("Could not fetch stops from server");
 
-        if (scheduledFuture != null && !scheduledFuture.isDone()) scheduledFuture.cancel(true);
-        if (query.length() <= MIN_QUERY_LENGTH) return;
-        scheduledFuture =
-                executorService.schedule(
-                        () -> {
-                            try {
-                                var request = netzplanService.getPlaces(Locale.getDefault(), query);
-                                var response = request.execute();
+                        var filteredStops =
+                                response.body().stream()
+                                        .filter(poi -> poi.getType() == PoiType.STOP)
+                                        .toList();
 
-                                if (response.code() == 500)
-                                    throw new NotFoundException(
-                                            "Could not find any stops matching query");
-                                if (!response.isSuccessful() || response.body() == null)
-                                    throw new IOException("An error has occurred while querying");
+                        stopPointCache.put(query, filteredStops);
 
-                                var filteredStops =
-                                        response.body().stream()
-                                                .filter(poi -> poi.getType() == PoiType.STOP)
-                                                .toList();
+                        Platform.runLater(
+                                () -> {
+                                    if (start.getText() != null || query.equals(start.getText()))
+                                        listDataView.setAll(filteredStops);
+                                });
 
-                                Platform.runLater(() -> listDataView.setAll(filteredStops));
-                                stopPointCache.put(query, filteredStops);
-                            } catch (IOException e) {
-                                Platform.runLater(
-                                        () ->
-                                                notificationBuilder
-                                                        .title("Network Error")
-                                                        .text("Could not fetch stops from server")
-                                                        .showError());
-                            } catch (NotFoundException e) {
-                                Platform.runLater(
-                                        () ->
-                                                notificationBuilder
-                                                        .title("No stops found")
-                                                        .text(e.getMessage())
-                                                        .showWarning());
-                            }
-                        },
-                        QUERY_DELAY,
-                        TimeUnit.MILLISECONDS);
+                    } catch (IOException e) {
+                        Platform.runLater(
+                                () ->
+                                        notificationBuilder
+                                                .title("Network Error")
+                                                .text("Could not fetch stops from server")
+                                                .showError());
+                    } catch (NotFoundException e) {
+                        Platform.runLater(
+                                () ->
+                                        notificationBuilder
+                                                .title("No stops found")
+                                                .text(e.getMessage())
+                                                .showWarning());
+                    }
+                },
+                QUERY_DELAY);
     }
 
     public void showAvailableRoutes() {
@@ -199,7 +209,6 @@ public class RouteController extends ControllerHelper implements IMapContext {
                     .text("Could not save cache")
                     .showError();
         }
-
         sceneController.showModal("pages/route/availableRoutes/availableRoutes.fxml");
     }
 
