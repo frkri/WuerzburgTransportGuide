@@ -124,7 +124,7 @@ public class MapController extends ControllerHelper implements IMapContext {
         StringBuilder stringBuilder = new StringBuilder();
         try {
             var routePath = mapContext.journeys.getLegs().get(0).getPoints();
-
+            var walks = 0;
             // Header
             stringBuilder.append(
                     MessageFormat.format(
@@ -182,16 +182,19 @@ public class MapController extends ControllerHelper implements IMapContext {
                                     stop.getName(),
                                     stop.getRef().getArrDelay()));
                 }
-                if (mapContext.journeys.getLegs().size() - 1 != i) {
+                if (!leg.getMode().getProduct().equals("Fussweg")) {
                     stringBuilder.append(
                             MessageFormat.format(
                                     """
-                                            U
+                                            
                                             ---
                                             {0}. Interchange
 
                                             """,
-                                    i + 1));
+                                    i + 1 - walks));
+
+                } else {
+                    walks++;
                 }
             }
 
