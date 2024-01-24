@@ -230,6 +230,7 @@ paths:
                                   properties:
                                     coords:
                                       type: string
+                                      format: coordinates
                                     platform:
                                       type: string
                                     depDelay:

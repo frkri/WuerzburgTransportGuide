@@ -1,0 +1,20 @@
+#background {
+	-fx-background-image: url("start_bg.png");
+	-fx-background-size: cover;
+}
+
+#startButton {
+	-fx-background-color: rgb(50, 50, 50, 0.8);
+	-fx-background-radius: 10;
+	-fx-text-fill: white;
+	-fx-font-size: 25px;
+}
+
+#header {
+	-fx-background-color: rgb(50, 50, 50, 0.8);
+	-fx-background-radius: 10;
+	-fx-padding: 15px;
+	-fx-font-size: 40px;
+	-fx-font-weight: bold;
+	-fx-text-fill: white;
+}

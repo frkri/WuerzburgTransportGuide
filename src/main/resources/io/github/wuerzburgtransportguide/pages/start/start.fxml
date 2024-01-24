@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox id="background" alignment="TOP_CENTER" prefHeight="800.0" prefWidth="1000.0" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
+	xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.wuerzburgtransportguide.view.pages.start.StartController"
+>
+	<padding>
+		<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+	</padding>
+	<GridPane alignment="CENTER" hgap="15.0" vgap="15.0" VBox.vgrow="ALWAYS">
+		<columnConstraints>
+			<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+		</columnConstraints>
+		<rowConstraints>
+			<RowConstraints maxHeight="640.0" minHeight="10.0" prefHeight="512.0" vgrow="ALWAYS" />
+			<RowConstraints maxHeight="251.0" minHeight="105.0" prefHeight="200.0" />
+		</rowConstraints>
+		<children>
+			<Label id="header" text="WuerzburgTransportGuide" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+			<Button fx:id="startButton" onAction="#switchSceneToRoute" id="startButton" alignment="CENTER" maxHeight="80.0" maxWidth="150.0" minHeight="20.0" minWidth="20.0"
+				mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" text="Start" textAlignment="CENTER" textOverrun="CLIP" GridPane.halignment="CENTER" GridPane.rowIndex="1"
+				GridPane.valignment="CENTER" />
+		</children>
+	</GridPane>
+	<stylesheets>
+		<URL value="@../../styles/global.css" />
+		<URL value="@start.css" />
+	</stylesheets>
+</VBox>

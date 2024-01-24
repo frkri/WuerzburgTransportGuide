@@ -19,18 +19,29 @@ ext {
 	junitVersion = '5.10.1'
 }
 
-tasks.withType(JavaCompile).configureEach {
-	options.encoding = 'UTF-8'
-}
-
 application {
 	mainModule = 'io.github.wuerzburgtransportguide'
-	mainClass = 'io.github.wuerzburgtransportguide.HelloApplication'
+	mainClass = 'io.github.wuerzburgtransportguide.App'
+
+	// Required as the interface ServiceFactory is not exported by com.gluonhq.attach.util
+	// But to register a service using the public api, the interface is required?
+	applicationDefaultJvmArgs = [
+		'--add-exports',
+		'com.gluonhq.attach.util/com.gluonhq.attach.util.impl=io.github.wuerzburgtransportguide'
+	]
+}
+
+compileJava {
+	options.encoding = 'UTF-8'
+	options.compilerArgs += [
+		'--add-exports',
+		'com.gluonhq.attach.util/com.gluonhq.attach.util.impl=io.github.wuerzburgtransportguide'
+	]
 }
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
+		languageVersion = JavaLanguageVersion.of(20)
 	}
 }
 
@@ -47,9 +58,13 @@ dependencies {
 	implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 	implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
 	implementation 'com.google.code.gson:gson:2.10.1'
+	implementation 'com.gluonhq:maps:2.0.0-ea+6' exclude group: 'org.openjfx'
+	implementation 'com.gluonhq.attach:storage:4.0.19' exclude group: 'org.openjfx'
 	implementation 'jakarta.annotation:jakarta.annotation-api:3.0.0-M1'
 	implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
 	implementation 'org.jetbrains:annotations:24.1.0'
+	implementation 'org.apache.commons:commons-text:1.11.0'
+	implementation 'org.controlsfx:controlsfx:11.2.0'
 
 	testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
@@ -66,7 +81,7 @@ openApiGenerate {
 	apiPackage.set("io.github.wuerzburgtransportguide.api")
 	modelPackage.set("io.github.wuerzburgtransportguide.model")
 	ignoreFileOverride.set("$rootDir/specs/.openapi-generator-ignore")
-	configOptions.set([dateLibrary: "java8", useJakartaEe: "true"])
+	configOptions.set([dateLibrary: "java8", useJakartaEe: "true", "serializableModel": "true"])
 
 	// Models can be found under io.github.wuerzburgtransportguide.model
 	// GSON Deserializers can be found under io.github.wuerzburgtransportguide.client.adapters

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox id="background" alignment="TOP_CENTER" prefHeight="800.0" prefWidth="1000.0" spacing="20.0" styleClass="background" xmlns="http://javafx.com/javafx/17.0.2-ea"
+	xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.wuerzburgtransportguide.view.pages.route.RouteController"
+>
+	<padding>
+		<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+	</padding>
+	<children>
+		<GridPane alignment="CENTER" hgap="15.0" vgap="15.0" VBox.vgrow="ALWAYS">
+			<columnConstraints>
+				<ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="400.0" />
+				<ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="400.0" />
+			</columnConstraints>
+			<rowConstraints>
+				<RowConstraints maxHeight="70.0" minHeight="10.0" prefHeight="512.0" vgrow="ALWAYS" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+				<RowConstraints maxHeight="140.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+			</rowConstraints>
+			<children>
+				<ListView fx:id="startList" prefHeight="200.0" prefWidth="200.0" styleClass="fenster, lists" GridPane.rowIndex="1" />
+				<ListView fx:id="destinationList" prefHeight="200.0" prefWidth="200.0" styleClass="fenster, lists" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+				<TextField id="ziel" fx:id="destination" promptText="Destination" styleClass="fenster" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+				<TextField id="start" fx:id="start" promptText="Start" styleClass="fenster" GridPane.hgrow="ALWAYS" />
+				<Button id="button" onAction="#showAvailableRoutes" prefHeight="100" prefWidth="400" text="Search" GridPane.columnSpan="2" GridPane.halignment="CENTER"
+					GridPane.rowIndex="2" />
+				<Button id="buttonSecondary" onAction="#clearCache" prefHeight="25.0" prefWidth="150.0" text="Clear Cache" GridPane.columnIndex="1" GridPane.halignment="RIGHT"
+					GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" GridPane.vgrow="NEVER" />
+			</children>
+		</GridPane>
+	</children>
+	<stylesheets>
+		<URL value="@../../styles/global.css" />
+		<URL value="@route.css" />
+	</stylesheets>
+</VBox>

@@ -1,0 +1,41 @@
+.fenster {
+	-fx-background-color: #4E5357;
+	-fx-text-fill: white;
+}
+
+.lists {
+	-fx-control-inner-background: #4E5357;
+	-fx-text-fill: white;
+}
+
+.list-cell:filled:selected:focused, .lists:filled:selected, .lists:even,
+	.lists:odd {
+	-fx-background-color: #4E5357;
+	-fx-text-fill: white;
+}
+
+.lists:filled:selected:focused, .lists:filled:selected, .lists:even,
+	.lists:odd {
+	-fx-background-color: transparent;
+}
+
+.lists>* {
+	-fx-control-inner-background: #4E5357;
+	-fx-background-color: black;
+}
+
+#button {
+	-fx-control-inner-background: #4E5357;
+	-fx-background-color: #4E5357;
+	-fx-background-radius: 10;
+	-fx-text-fill: white;
+	-fx-font-size: 25px;
+}
+
+#buttonSecondary {
+	-fx-control-inner-background: #4E5357;
+	-fx-background-color: #4E5357;
+	-fx-background-radius: 5;
+	-fx-text-fill: white;
+	-fx-font-size: 15px;
+}

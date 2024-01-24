@@ -3,4 +3,4 @@ lineWidth=180
 alignEndBracket=true
 indentationChar=tab
 indentationSize=1
-splitMultiAttrs=true
+splitMultiAttrs=false

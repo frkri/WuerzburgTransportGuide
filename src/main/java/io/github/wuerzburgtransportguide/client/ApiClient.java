@@ -10,7 +10,6 @@ import io.github.wuerzburgtransportguide.client.componenents.RequiredXsrfInterce
 import io.github.wuerzburgtransportguide.model.Coordinates;
 import io.github.wuerzburgtransportguide.model.CoordinatesList;
 
-import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 
 import retrofit2.Retrofit;
@@ -28,11 +27,6 @@ public class ApiClient {
     public ApiClient(String apiUrl) {
         var okHttpClient =
                 new OkHttpClient.Builder().followRedirects(false).retryOnConnectionFailure(true);
-
-        // Cache
-        var cacheDir = Util.getCacheDir();
-        if (cacheDir != null && cacheDir.toFile().canWrite() && cacheDir.toFile().canRead())
-            okHttpClient.cache(new Cache(cacheDir.toFile(), 10L * 1024L * 1024L));
 
         // CookieStore
         var cookieStore = new FilteredCookieStore(List.of("XSRF-TOKEN", "laravel_token"));

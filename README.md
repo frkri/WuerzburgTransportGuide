@@ -8,7 +8,7 @@ This project is not affiliated with or supported by the Verkehrsverbund Mainfran
 
 ## Building
 
-At (minimum) Java Development Kit 21 is required to build this project.
+At (minimum) Java Development Kit 20 is required to build this project.
 The project uses the [Gradle](https://gradle.org/) build system.
 
 ### Building the Project
