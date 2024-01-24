@@ -186,7 +186,7 @@ public class MapController extends ControllerHelper implements IMapContext {
                     stringBuilder.append(
                             MessageFormat.format(
                                     """
-                                            
+
                                             ---
                                             {0}. Interchange
 
