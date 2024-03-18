@@ -62,12 +62,14 @@ public class AvailableRoutesController extends ControllerHelper implements IMapC
                                 if (!response.isSuccessful()
                                         || journeys == null
                                         || journeys.isEmpty()) {
-                                    notificationBuilder
-                                            .title("No journeys found")
-                                            .text(
-                                                    "Could not find any journeys. Check your"
-                                                            + " query.")
-                                            .showError();
+                                    Platform.runLater(
+                                            () ->
+                                                    notificationBuilder
+                                                            .title("No journeys found")
+                                                            .text(
+                                                                    "Could not find any journeys."
+                                                                            + " Check your query.")
+                                                            .showError());
                                     return;
                                 }
 
