@@ -55,7 +55,7 @@ public class AvailableRoutesController extends ControllerHelper implements IMapC
                                 journeyRequest.setDeparture(1);
                                 var response =
                                         netzplanService
-                                                .getJourneys(journeyRequest, Locale.getDefault())
+                                                .getJourneys(journeyRequest, Locale.GERMANY)
                                                 .execute();
                                 journeys = response.body();
 

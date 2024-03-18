@@ -150,7 +150,7 @@ public class RouteController extends ControllerHelper implements IMapContext {
         executorService.submit(
                 () -> {
                     try {
-                        var request = netzplanService.getPlaces(Locale.getDefault(), query);
+                        var request = netzplanService.getPlaces(Locale.GERMANY, query);
                         var response = request.execute();
 
                         if (response.code() == 500)
