@@ -64,7 +64,7 @@ dependencies {
 	implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
 	implementation 'org.jetbrains:annotations:24.1.0'
 	implementation 'org.apache.commons:commons-text:1.11.0'
-	implementation 'org.controlsfx:controlsfx:11.2.0'
+	implementation 'org.controlsfx:controlsfx:11.2.1'
 
 	testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
