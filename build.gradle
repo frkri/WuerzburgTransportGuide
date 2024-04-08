@@ -60,7 +60,7 @@ dependencies {
 	implementation 'com.google.code.gson:gson:2.10.1'
 	implementation 'com.gluonhq:maps:2.0.0-ea+6' exclude group: 'org.openjfx'
 	implementation 'com.gluonhq.attach:storage:4.0.20' exclude group: 'org.openjfx'
-	implementation 'jakarta.annotation:jakarta.annotation-api:3.0.0-M1'
+	implementation 'jakarta.annotation:jakarta.annotation-api:3.0.0'
 	implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
 	implementation 'org.jetbrains:annotations:24.1.0'
 	implementation 'org.apache.commons:commons-text:1.11.0'
