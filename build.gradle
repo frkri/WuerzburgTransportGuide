@@ -4,7 +4,7 @@ plugins {
 	id 'org.javamodularity.moduleplugin' version '1.8.15'
 	id 'org.openjfx.javafxplugin' version '0.1.0'
 	id 'org.beryx.jlink' version '3.0.1'
-	id "org.openapi.generator" version "7.4.0"
+	id "org.openapi.generator" version "7.6.0"
 	id "com.diffplug.spotless" version "6.25.0"
 }
 
