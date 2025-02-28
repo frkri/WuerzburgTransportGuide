@@ -35,13 +35,14 @@ public class ApiClient {
         // Required Headers
         var requiredHeaders =
                 List.of(
-                        new RequiredHeader("User-Agent", "WuerzburgTransportGuide/1.0.0"),
+                        new RequiredHeader("User-Agent", "WuerzburgTransportGuide/1.1.0"),
                         new RequiredHeader("Accept", "application/json"));
         okHttpClient.addInterceptor(new RequiredHeadersInterceptor(requiredHeaders));
 
         // XSRF Token Authenticator
         okHttpClient.addInterceptor(
-                new RequiredXsrfInterceptor(cookieStore, List.of("https://netzplan.vvm-info.de/")));
+                new RequiredXsrfInterceptor(
+                        cookieStore, List.of("https://netzplan.region-mainfranken.de/")));
 
         // GSON with adapter for vanilla and custom types
         var gson =

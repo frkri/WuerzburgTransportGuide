@@ -32,7 +32,7 @@ public class App extends Application {
                     System.exit(0);
                 });
 
-        var apiBuilder = new ApiClient("https://netzplan.vvm-info.de/api/");
+        var apiBuilder = new ApiClient("https://netzplan.region-mainfranken.de/api/");
         var netzplanService = apiBuilder.createClientService(NetzplanApi.class);
         var notificationBuilder =
                 Notifications.create().hideAfter(Duration.seconds(3)).graphic(null).darkStyle();

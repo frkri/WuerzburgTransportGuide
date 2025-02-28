@@ -3,10 +3,10 @@ info:
   title: Netzplan
   version: 1.0.0
 servers:
-  - url: https://netzplan.vvm-info.de/api
+  - url: https://netzplan.region-mainfranken.de/api
     description: |
       The Netzplan API is a collection of endpoints that provide information about the public transport network in the VVM area.
-      The API is used by the [netzplan.vvm-info.de](https://netzplan.vvm-info.de/api), it is not intended for external use.
+      The API is used by the [netzplan.region-mainfranken.de](https://netzplan.region-mainfranken.de/api), it is not intended for external use.
       
       The API requires a valid CSRF token to be sent in the `X-XSRF-Token` header. The token can be retrieved from the `XSRF-TOKEN` cookie that is set when visiting the website and must be sent on further request.
       Also the cookie `laravel_token`, which serves the purpose of a session cookie, is required to be sent in the `Cookie` header.
@@ -16,7 +16,7 @@ servers:
       In addition the spec defines custom formats for the `coords`, `coordsList`, `localDateTime` and other types to help with the usage of the API in code.
       The Java implementation can be found in ``io.github.wuerzburgtransportguide.client.adapters`` for the GSON adapters and ``io.github.wuerzburgtransportguide.client.model`` for the models.
 paths:
-  /journeyplanners/efa_xml/locations/{stationId}/stationboard/departure:
+  /journeyplanners/bayfp/locations/{stationId}/stationboard/departure:
     get:
       operationId: getDepartures
       summary: Get departures of a stop, including 'realtime' data
@@ -74,7 +74,7 @@ paths:
           required: true
           schema:
             type: string
-  /journeyplanners/efa_xml/places:
+  /journeyplanners/bayfp/places:
     get:
       operationId: getPlaces
       summary:
@@ -108,7 +108,7 @@ paths:
           required: false
           schema:
             type: string
-  /journeyplanners/efa_xml/journeys:
+  /journeyplanners/bayfp/journeys:
     post:
       operationId: getJourneys
       summary: Retrieve journeys between two locations at a given time
@@ -345,5 +345,5 @@ x-path-templates:
   - ignore:/bc-drawing/ilnp
   - ignore:/maps/tlnp/layersets
   - ignore:/wms-layers/wvvwuerzburg_haltestellen_gesamt/features
-  - ignore:/journeyplanners/efa_xml/locations
+  - ignore:/journeyplanners/bayfp/locations
   - ignore:/search-radius
