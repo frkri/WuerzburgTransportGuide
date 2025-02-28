@@ -47,7 +47,7 @@
 					</rowConstraints>
 					<children>
 						<Hyperlink onAction="#visitOpenStreetMap" styleClass="routeInfos" text="Map data from OpenStreetMap" GridPane.columnIndex="0" GridPane.columnSpan="2" />
-						<Hyperlink onAction="#visitVVM" styleClass="routeInfos" text="Public Transport data from VVM" GridPane.columnIndex="2" GridPane.columnSpan="2" />
+						<Hyperlink onAction="#visitNVM" styleClass="routeInfos" text="Public Transport data from NVM" GridPane.columnIndex="2" GridPane.columnSpan="2" />
 						<Circle fill="#4D80FFB3" radius="10.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="4" />
 						<Label fx:id="start" styleClass="routeInfos" GridPane.columnIndex="5" GridPane.columnSpan="2" />
 						<Label fx:id="arrow" styleClass="routeInfos" text="-&gt;" GridPane.columnIndex="7" />

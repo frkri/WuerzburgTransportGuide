@@ -111,9 +111,9 @@ public class MapController extends ControllerHelper implements IMapContext {
         }
     }
 
-    public void visitVVM() {
+    public void visitNVM() {
         try {
-            Util.visitSite("https://netzplan.vvm-info.de/");
+            Util.visitSite("https://netzplan.region-mainfranken.de/");
         } catch (Exception e) {
             notificationBuilder.title("Cannot open site").text("Failed to open site").showError();
         }
